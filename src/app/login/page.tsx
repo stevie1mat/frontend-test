@@ -4,71 +4,73 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-    const router = useRouter();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError('');
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
 
-        try {
-            const res = await fetch('https://trademinutes-auth.onrender.com/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
-            });
+    try {
+      const res = await fetch('http://localhost:8080/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-            const data = await res.json();
-            if (!res.ok) {
-                throw new Error(data.message || 'Login failed');
-            }
+      const data = await res.json();
 
-            // Save token and redirect
-            localStorage.setItem('token', data.token);
-            router.push('/dashboard'); // Change to your actual route
-        } catch (err: any) {
-            setError(err.message);
-        }
-    };
+      if (!res.ok) {
+        throw new Error(data.message || 'Invalid email or password');
+      }
 
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-200 p-4">
-            <form
-                onSubmit={handleLogin}
-                className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md"
-            >
-                <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Login to TradeMinutes</h1>
+      // ✅ Save token to localStorage
+      localStorage.setItem('token', data.token);
 
-                {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
+      // ✅ Redirect to /profile
+      router.push('/profile');
+    } catch (err: any) {
+      setError(err.message || 'Something went wrong');
+    }
+  };
 
-               <input
-  type="email"
-  placeholder="Email"
-  value={email}
-  onChange={(e) => setEmail(e.target.value)}
-  className="w-full p-3 mb-4 border border-gray-300 rounded-md text-gray-700 placeholder:text-gray-500 text-sm"
-  required
-/>
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-200 p-4">
+      <form
+        onSubmit={handleLogin}
+        className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md"
+      >
+        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Login to TradeMinutes</h1>
 
-<input
-  type="password"
-  placeholder="Password"
-  value={password}
-  onChange={(e) => setPassword(e.target.value)}
-  className="w-full p-3 mb-6 border border-gray-300 rounded-md text-gray-700 placeholder:text-gray-500 text-sm"
-  required
-/>
-                <button
-                    type="submit"
-                    className="bg-blue-600 text-white py-3 rounded-md w-full hover:bg-blue-700 transition"
-                >
-                    Login
-                </button>
-            </form>
-        </div>
-    );
+        {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
+
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full p-3 mb-4 border border-gray-300 rounded-md text-gray-700 placeholder:text-gray-700 text-sm"
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full p-3 mb-6 border border-gray-300 rounded-md text-gray-700 placeholder:text-gray-700 text-sm"
+          required
+        />
+        <button
+          type="submit"
+          className="bg-blue-600 text-white py-3 rounded-md w-full hover:bg-blue-700 transition"
+        >
+          Login
+        </button>
+      </form>
+    </div>
+  );
 }
