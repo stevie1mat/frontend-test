@@ -86,7 +86,7 @@ export default function ProfilePage() {
                         </div>
                     </div>
 
-                    {/* Engagement Score */}
+                    {/* Engagement */}
                     <div className="bg-white p-6 rounded-xl shadow-md">
                         <h2 className="text-lg  text-gray-500 font-semibold mb-4">Engagement</h2>
                         <p className="text-5xl font-bold text-green-600 text-center mb-2">4.85</p>
