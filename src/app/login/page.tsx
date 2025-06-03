@@ -9,34 +9,37 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+ const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError('');
 
-    try {
-      const res = await fetch('http://localhost:8080/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+  try {
+    const res = await fetch('https://trademinutes-auth.onrender.com/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || 'Invalid email or password');
-      }
-
-      // ✅ Save token to localStorage
-      localStorage.setItem('token', data.token);
-
-      // ✅ Redirect to /profile
-      router.push('/profile');
-    } catch (err: any) {
-      setError(err.message || 'Something went wrong');
+    if (!res.ok) {
+      const message = await res.text(); // handle plain-text error
+      throw new Error(
+        message.toLowerCase().includes('user') ? 'Incorrect email or password' : message
+      );
     }
-  };
+
+    const data = await res.json(); // this is safe only when res.ok is true
+    localStorage.setItem('token', data.token);
+    router.push('/profile');
+  }catch (err: unknown) {
+  if (err instanceof Error) {
+    setError(err.message || 'Something went wrong');
+  } else {
+    setError('Something went wrong');
+  }
+}
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-200 p-4">
