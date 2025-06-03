@@ -28,9 +28,13 @@ export default function RegisterPage() {
     if (!res.ok) throw new Error(data || 'Registration failed');
 
     router.push('/login');
-  } catch (err: any) {
+  } catch (err: unknown) {
+  if (err instanceof Error) {
     setError(err.message || 'Something went wrong');
+  } else {
+    setError('Something went wrong');
   }
+}
 };
 
   return (

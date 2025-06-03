@@ -30,9 +30,13 @@ export default function ProfilePage() {
                 if (!res.ok) throw new Error(data.message || 'Failed to fetch profile');
 
                 setProfile(data);
-            } catch (err: any) {
-                setError(err.message);
-            }
+            }catch (err: unknown) {
+  if (err instanceof Error) {
+    setError(err.message || 'Something went wrong');
+  } else {
+    setError('Something went wrong');
+  }
+}
         };
 
         fetchProfile();
