@@ -28,7 +28,7 @@ export default function ProfilePage() {
       }
 
       try {
-        const res = await fetch('http://localhost:8080/api/auth/profile', {
+        const res = await fetch('https://trademinutes-auth.onrender.com/api/auth/profile', {
           headers: { Authorization: `Bearer ${token}` },
         });
 
