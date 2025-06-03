@@ -45,23 +45,23 @@ export default function LoginPage() {
 
                 {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
 
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full p-3 mb-4 border border-gray-300 rounded-md placeholder:text-gray-700"
-                    required
-                />
+               <input
+  type="email"
+  placeholder="Email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  className="w-full p-3 mb-4 border border-gray-300 rounded-md text-gray-700 placeholder:text-gray-500 text-sm"
+  required
+/>
 
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full p-3 mb-6 border border-gray-300 rounded-md placeholder:text-gray-700"
-                    required
-                />
+<input
+  type="password"
+  placeholder="Password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  className="w-full p-3 mb-6 border border-gray-300 rounded-md text-gray-700 placeholder:text-gray-500 text-sm"
+  required
+/>
                 <button
                     type="submit"
                     className="bg-blue-600 text-white py-3 rounded-md w-full hover:bg-blue-700 transition"
