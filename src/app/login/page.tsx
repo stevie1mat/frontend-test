@@ -91,6 +91,11 @@ export default function LoginPage() {
         onSubmit={handleLogin}
         className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md relative overflow-hidden z-10"
       >
+        {loading && (
+  <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-20">
+    <img src="/loader.gif" alt="Loading..." className="w-15 h-12" />
+  </div>
+)}
         {/* Optional Background Logo */}
         <div className="absolute bottom-0 left-0 w-full h-full flex justify-center items-end pointer-events-none select-none">
         
