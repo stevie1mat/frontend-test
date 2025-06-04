@@ -2,12 +2,14 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import Navbar from './components/Navbar';
 
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-white text-gray-900 font-sans">
       {/* Navbar */}
-      <nav className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
+       <Navbar />
+      {/* <nav className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
         <div className="text-2xl font-bold text-blue-700">
           Trade<span className="text-black">Minutes</span>
         </div>
@@ -27,7 +29,7 @@ export default function HomePage() {
             </button>
           </Link>
         </div>
-      </nav>
+      </nav> */}
 
       {/* Hero Section */}
       <section className="text-center pt-12 px-4 bg-gradient-to-b from-white to-blue-50">
@@ -45,21 +47,21 @@ export default function HomePage() {
         </Link>
 
         <div className="mt-10 flex flex-col items-center md:flex-row md:justify-center gap-16">
-         <Image
-  src="/clock.png"
-  alt="Clock in hand"
-  width={200}
-  height={200}
-  className="rounded-lg"
-/>
+          <Image
+            src="/clock.png"
+            alt="Clock in hand"
+            width={200}
+            height={200}
+            className="rounded-lg"
+          />
 
- <Image
-  src="/map.png"
-  alt="Clock in hand"
-  width={250}
-  height={200}
-  className="rounded-lg shadow-md"
-/>
+          <Image
+            src="/map.png"
+            alt="Clock in hand"
+            width={250}
+            height={200}
+            className="rounded-lg shadow-md"
+          />
         </div>
       </section>
 
