@@ -7,6 +7,7 @@ import HowItWorks from './components/HowItWorks';
 import Benefits from './components/Benefits';
 import Pricing from './components/Pricing';
 import FAQ from './components/FAQ';
+import Footer from './components/Footer';
 
 export default function HomePage() {
   return (
@@ -97,19 +98,23 @@ export default function HomePage() {
             </p>
           </div>
         </div>
-        <HowItWorks />
-        <Benefits />
-        <Pricing />
-        <FAQ />
-        <div className="text-center mt-16 text-gray-400 text-sm">
+       
+       
+        {/* <div className="text-center mt-16 text-gray-400 text-sm">
           <p>Trusted by</p>
           <div className="flex flex-wrap justify-center space-x-4 mt-2">
             <span>© GlobalBank</span>
             <span>© Epicurious</span>
             <span>© Acme Corp</span>
           </div>
-        </div>
+        </div> */}
+        
       </section>
+       <HowItWorks />
+        <Benefits />
+       <Pricing />
+        <FAQ />
+      <Footer />
     </main>
   );
 }
