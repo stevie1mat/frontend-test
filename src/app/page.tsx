@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from './components/Navbar';
+import HowItWorks from './components/HowItWorks';
 
 export default function HomePage() {
   return (
@@ -93,7 +94,7 @@ export default function HomePage() {
             </p>
           </div>
         </div>
-
+        <HowItWorks />
         <div className="text-center mt-16 text-gray-400 text-sm">
           <p>Trusted by</p>
           <div className="flex flex-wrap justify-center space-x-4 mt-2">
