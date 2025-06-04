@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-800 text-white py-8 w-full">
       <div className="px-6">
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-12">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-12 text-center">
           {/* Column 1: Links */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>

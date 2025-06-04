@@ -1,13 +1,14 @@
 'use client';
 
+import Benefits from '@/components/Benefits';
+import FAQ from '@/components/FAQ';
+import Footer from '@/components/Footer';
+import HowItWorks from '@/components/HowItWorks';
+import Navbar from '@/components/Navbar';
+import Pricing from '@/components/Pricing';
 import Image from 'next/image';
 import Link from 'next/link';
-import Navbar from './components/Navbar';
-import HowItWorks from './components/HowItWorks';
-import Benefits from './components/Benefits';
-import Pricing from './components/Pricing';
-import FAQ from './components/FAQ';
-import Footer from './components/Footer';
+
 
 export default function HomePage() {
   return (
