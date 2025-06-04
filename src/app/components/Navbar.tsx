@@ -42,9 +42,9 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu with Conditional Shadow and Increased Top Margin */}
       {isMobileMenuOpen && (
-        <div className="md:hidden flex flex-col items-center py-4 space-y-4">
+        <div className="md:hidden flex flex-col items-center py-4 space-y-4 shadow-lg mt-6">
           <span className="hover:text-black cursor-pointer">How it works</span>
           <span className="hover:text-black cursor-pointer">Features</span>
           <span className="hover:text-black cursor-pointer">Pricing</span>
