@@ -5,6 +5,8 @@ import Link from 'next/link';
 import Navbar from './components/Navbar';
 import HowItWorks from './components/HowItWorks';
 import Benefits from './components/Benefits';
+import Pricing from './components/Pricing';
+import FAQ from './components/FAQ';
 
 export default function HomePage() {
   return (
@@ -97,6 +99,8 @@ export default function HomePage() {
         </div>
         <HowItWorks />
         <Benefits />
+        <Pricing />
+        <FAQ />
         <div className="text-center mt-16 text-gray-400 text-sm">
           <p>Trusted by</p>
           <div className="flex flex-wrap justify-center space-x-4 mt-2">
