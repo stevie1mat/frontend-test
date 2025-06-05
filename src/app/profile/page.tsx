@@ -60,7 +60,7 @@ export default function ProfileDashboardPage() {
         <nav className="space-y-2">
           <button className="block w-full text-left py-2 px-4 rounded bg-violet-600">Dashboard</button>
           <button className="block w-full text-left py-2 px-4 hover:bg-zinc-700">Settings</button>
-          <button onClick={handleLogout} className="block w-full text-left py-2 px-4 hover:bg-red-600 text-left">Logout</button>
+          <button onClick={handleLogout} className="block w-full text-left py-2 px-4 hover:bg-red-600">Logout</button>
         </nav>
       </aside>
 
@@ -81,32 +81,41 @@ export default function ProfileDashboardPage() {
 
         {profile && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Welcome Panel */}
             <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-md col-span-2">
               <h2 className="text-lg text-gray-800 dark:text-white font-semibold mb-4">Welcome, {profile.name}</h2>
               <p className="text-sm text-gray-500 dark:text-gray-300 mb-2">Email: <span className="font-medium text-gray-800 dark:text-white">{profile.email}</span></p>
               <p className="text-sm text-gray-400">Your dashboard metrics will appear below.</p>
             </div>
 
+            {/* Reviews */}
             <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-md">
-              <h2 className="text-lg text-gray-500 dark:text-gray-300 font-semibold mb-4">Engagement</h2>
-              <p className="text-5xl font-bold text-green-600 text-center mb-2">4.85</p>
+              <h2 className="text-lg text-gray-500 dark:text-gray-300 font-semibold mb-4">Reviews</h2>
+              <p className="text-3xl font-bold text-green-600 text-center mb-2">⭐4.85</p>
               <div className="flex justify-center space-x-2 text-xs text-gray-500">
-                <span>⭐ 3.2k reviews</span>
-                <span>👍 High engagement</span>
+                
+          
               </div>
             </div>
 
+            {/* Locations */}
             <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-md col-span-2">
-              <h2 className="text-lg text-gray-500 dark:text-gray-300 font-semibold mb-4">Audience Locations</h2>
+              <h2 className="text-lg text-gray-500 dark:text-gray-300 font-semibold mb-4">Locations</h2>
               <div className="h-32 bg-gray-100 dark:bg-zinc-700 rounded-lg flex items-center justify-center text-gray-400">
                 Map Placeholder
               </div>
             </div>
 
+            {/* Rewards */}
             <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-md">
-              <h2 className="text-lg text-gray-500 dark:text-gray-300 font-semibold mb-4">Audience Growth</h2>
-              <div className="h-24 bg-gray-100 dark:bg-zinc-700 rounded-lg flex items-center justify-center text-gray-400">
-                Chart Here
+              <h2 className="text-lg text-gray-500 dark:text-gray-300 font-semibold mb-4">Rewards</h2>
+              <div className="h-24 bg-gray-100 dark:bg-zinc-700 rounded-lg flex items-center justify-between px-4">
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 font-semibold">Congratulations</p>
+                  <p className="text-lg font-bold text-green-600">$50</p>
+                  
+                </div>
+                <img src="/reward.jpg" alt="Reward" className="h-12 w-12 md:h-16 md:w-16 object-contain" />
               </div>
             </div>
           </div>
