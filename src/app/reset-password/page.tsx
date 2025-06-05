@@ -10,6 +10,23 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState('');
   const [successDialog, setSuccessDialog] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('theme');
+    setIsDarkMode(saved === 'dark');
+  }, []);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDarkMode) {
+      root.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDarkMode]);
 
   // Extract token from URL on load
   useEffect(() => {
@@ -45,43 +62,65 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
-      <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-sm relative">
-        <h2 className="text-xl font-semibold mb-4 text-center">Reset Password</h2>
-        <form onSubmit={handleResetPassword}>
-          {error && <p className="text-red-600 text-sm mb-3 text-center">{error}</p>}
+    <div className={`${isDarkMode ? 'bg-black' : 'bg-gray-100'} min-h-screen transition-colors duration-300`}>
+      {/* Navbar */}
+      <nav className={`${isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-black'} shadow-md py-4 px-6 flex justify-between items-center`}>
+        <h1
+          className="text-2xl font-bold font-mono cursor-pointer hover:underline"
+          onClick={() => router.push('/')}
+        >
+          TradeMinutes
+        </h1>
+        <button
+          onClick={() => setIsDarkMode(!isDarkMode)}
+          className="text-sm rounded border px-3 py-1 border-gray-400 bg-zinc-700 text-white hover:bg-zinc-600"
+        >
+          {isDarkMode ? '☀️ Light' : '🌙 Dark'}
+        </button>
+      </nav>
 
-          <input
-            type="password"
-            placeholder="Enter new password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            className="w-full p-3 mb-4 border border-gray-300 rounded-md focus:outline-blue-500 text-gray-900"
-            required
-            disabled={loading}
-          />
+      {/* Form */}
+      <div className="flex items-center justify-center px-4 py-12">
+        <div className={`${isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-black'} rounded-lg shadow-md p-6 w-full max-w-sm relative transition-colors duration-300`}>
+          <h2 className="text-xl font-semibold mb-4 text-center">Reset Password</h2>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition"
-          >
-            {loading ? 'Resetting...' : 'Reset Password'}
-          </button>
-        </form>
+          <form onSubmit={handleResetPassword}>
+            {error && <p className="text-red-500 text-sm mb-3 text-center">{error}</p>}
 
-        {/* Success Dialog */}
-        {successDialog && (
-          <div className="absolute inset-0 bg-white/90 flex flex-col justify-center items-center rounded-lg">
-            <p className="text-green-700 font-semibold text-center mb-2">✅ Password changed successfully!</p>
+            <input
+              type="password"
+              placeholder="Enter new password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className={`w-full p-3 mb-4 rounded-md border ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-white border-gray-300 text-black'} focus:outline-blue-500`}
+              required
+              disabled={loading}
+            />
+
             <button
-              onClick={() => router.push('/login')}
-              className="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition"
             >
-              Go to Login
+              {loading ? 'Resetting...' : 'Reset Password'}
             </button>
-          </div>
-        )}
+          </form>
+
+          {/* Success Dialog */}
+          {successDialog && (
+            <div className="absolute inset-0 bg-white/90 dark:bg-black/90 flex flex-col justify-center items-center rounded-lg">
+              <p className="text-green-600 dark:text-green-400 font-semibold text-center mb-2">
+                ✅ Password changed successfully!
+              </p>
+              <button
+                onClick={() => router.push('/login')}
+                className="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
+                Go to Login
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

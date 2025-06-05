@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 
@@ -10,25 +10,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(true); // set default, override in useEffect
-
-  // Set initial theme based on localStorage after client-side mount
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    setIsDarkMode(savedTheme === 'dark');
-  }, []);
-
-  // Apply theme to root element on change
-  useEffect(() => {
-    const root = document.documentElement;
-    if (isDarkMode) {
-      root.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      root.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDarkMode]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,14 +45,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className={`${isDarkMode ? 'bg-black' : 'bg-white'} min-h-screen flex justify-center items-center px-4 transition-colors duration-300`}>
-      <button
-        onClick={() => setIsDarkMode(!isDarkMode)}
-        className="absolute top-4 right-4 px-3 py-1 text-sm rounded border border-gray-400 text-white bg-zinc-700 hover:bg-zinc-600 dark:text-white dark:bg-zinc-700 dark:border-gray-500"
-      >
-        {isDarkMode ? '☀️ Light' : '🌙 Dark'}
-      </button>
-
+    <div className="min-h-screen bg-black flex justify-center items-center px-4">
       <div className="flex flex-col md:flex-row justify-center items-center gap-12 max-w-6xl w-full">
         {/* Left: Image mockup */}
         <div className="hidden md:block">
@@ -83,13 +57,8 @@ export default function LoginPage() {
         </div>
 
         {/* Right: Login form */}
-        <div className={`rounded-md p-8 w-full max-w-sm ${isDarkMode ? 'bg-zinc-900 text-white' : 'bg-gray-100 text-black'} transition-colors duration-300`}>
-          <h1
-            onClick={() => router.push('/')}
-            className="text-4xl font-bold text-center mb-6 font-mono cursor-pointer hover:underline"
-          >
-            TradeMinutes
-          </h1>
+        <div className="bg-zinc-900 rounded-md p-8 w-full max-w-sm text-white">
+          <h1 className="text-4xl font-bold text-center mb-6 font-mono">TradeMinutes</h1>
 
           <form onSubmit={handleLogin}>
             {error && <p className="text-red-500 text-sm mb-2 text-center">{error}</p>}
@@ -99,7 +68,7 @@ export default function LoginPage() {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={`w-full p-3 mb-3 rounded border ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-white border-gray-300 text-black'}`}
+              className="w-full p-3 mb-3 rounded bg-zinc-800 border border-zinc-700 text-white"
               disabled={loading}
               required
             />
@@ -109,7 +78,7 @@ export default function LoginPage() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={`w-full p-3 mb-4 rounded border ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-white border-gray-300 text-black'}`}
+              className="w-full p-3 mb-4 rounded bg-zinc-800 border border-zinc-700 text-white"
               disabled={loading}
               required
             />
@@ -117,7 +86,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded font-bold text-white"
+              className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded font-bold"
             >
               {loading ? 'Logging in...' : 'Log In'}
             </button>
@@ -130,10 +99,10 @@ export default function LoginPage() {
           </div>
 
           <button
-            onClick={() => signIn('github')}
+            onClick={() => signIn('facebook')}
             className="flex items-center justify-center gap-2 text-blue-400 hover:underline w-full text-sm"
           >
-            <img src="/github.png" alt="GitHub" className="w-4 h-4" />
+            <img src="/github.png" alt="Facebook" className="w-4 h-4" />
             Log in with Github
           </button>
 
@@ -144,7 +113,7 @@ export default function LoginPage() {
             Forgot password?
           </p>
 
-          <p className={`text-sm text-center mt-4 ${isDarkMode ? 'text-white' : 'text-black'}`}>
+          <p className="text-sm text-center mt-4 text-white">
             Don’t have an account?{' '}
             <span
               onClick={() => router.push('/register')}
