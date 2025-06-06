@@ -7,7 +7,6 @@ import { FiLogOut } from 'react-icons/fi';
 
 export default function ProfileDashboardPage() {
   const [profile, setProfile] = useState<{ name: string; email: string } | null>(null);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const router = useRouter();
@@ -32,14 +31,13 @@ export default function ProfileDashboardPage() {
         const res = await fetch('https://trademinutes-auth.onrender.com/api/auth/profile', {
           headers: { Authorization: `Bearer ${token}` },
         });
-
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || 'Failed to fetch profile');
         setProfile(data);
-      } catch (err) {
+      } catch {
         router.push('/login');
       } finally {
-        setLoading(false); // Done checking
+        setLoading(false);
       }
     };
 
@@ -57,7 +55,7 @@ export default function ProfileDashboardPage() {
     }
   }, [isDarkMode]);
 
-  if (loading) return null; // Prevent flicker
+  if (loading) return null;
 
   return (
     <div className={`${isDarkMode ? 'bg-black text-white' : 'bg-white text-black'} min-h-screen flex`}>
@@ -95,8 +93,6 @@ export default function ProfileDashboardPage() {
             {isDarkMode ? '☀️ Light' : '🌙 Dark'}
           </button>
         </div>
-
-        {error && <p className="text-red-500 mb-4">{error}</p>}
 
         {profile && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
