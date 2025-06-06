@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { MdDashboard } from 'react-icons/md';
 import { FiLogOut } from 'react-icons/fi';
+import Image from 'next/image';
 
 export default function ProfileDashboardPage() {
   const [profile, setProfile] = useState<{ name: string; email: string } | null>(null);
@@ -125,7 +126,13 @@ export default function ProfileDashboardPage() {
                   <p className="text-sm font-semibold">Congratulations</p>
                   <p className="text-lg font-bold text-green-600">$50</p>
                 </div>
-                <img src="/reward.jpg" alt="Reward" className="h-12 w-12 md:h-16 md:w-16 object-contain" />
+                <Image
+                  src="/reward.jpg"
+                  alt="Reward"
+                  width={64}
+                  height={64}
+                  className="object-contain rounded"
+                />
               </div>
             </div>
           </div>
