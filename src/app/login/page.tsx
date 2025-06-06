@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 
@@ -10,49 +10,53 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [logs, setLogs] = useState<string[]>([]);
-  const [isDebugOpen, setIsDebugOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true); // set default, override in useEffect
 
-  const addLog = (message: string) => {
-    setLogs((prev) => [...prev, `${new Date().toLocaleTimeString()} — ${message}`]);
-  };
+  // Set initial theme based on localStorage after client-side mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    setIsDarkMode(savedTheme === 'dark');
+  }, []);
+
+  // Apply theme to root element on change
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDarkMode) {
+      root.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDarkMode]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    setLogs([]);
 
     try {
-      addLog('🔌 Connecting to auth server...');
       const res = await fetch('https://trademinutes-auth.onrender.com/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
 
-      addLog('📤 Sent credentials...');
-
       if (!res.ok) {
         const message = await res.text();
-        addLog(`❌ Error response: ${message}`);
         throw new Error(
           message.toLowerCase().includes('user') ? 'Incorrect email or password' : message
         );
       }
 
       const data = await res.json();
-      addLog('✅ Token received');
       localStorage.setItem('token', data.token);
-      addLog('➡️ Redirecting to profile...');
       router.push('/profile');
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
-        addLog(`❌ Login failed: ${err.message}`);
       } else {
         setError('Something went wrong');
-        addLog('❌ Unknown error occurred');
       }
     } finally {
       setLoading(false);
@@ -60,123 +64,97 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-200 p-4 relative">
-      {/* Debug Toggle Button (FAB) */}
+    <div className={`${isDarkMode ? 'bg-black' : 'bg-white'} min-h-screen flex justify-center items-center px-4 transition-colors duration-300`}>
       <button
-        type="button"
-        onClick={() => setIsDebugOpen(!isDebugOpen)}
-        className="fixed bottom-4 right-4 w-12 h-12 bg-black text-white rounded-full shadow-lg flex items-center justify-center z-40 hover:bg-gray-800 transition"
-        title="Toggle Debug"
+        onClick={() => setIsDarkMode(!isDarkMode)}
+        className="absolute top-4 right-4 px-3 py-1 text-sm rounded border border-gray-400 text-white bg-zinc-700 hover:bg-zinc-600 dark:text-white dark:bg-zinc-700 dark:border-gray-500"
       >
-        🐞
+        {isDarkMode ? '☀️ Light' : '🌙 Dark'}
       </button>
 
-      {/* Slide-in Debug Sidebar */}
-      <div className={`fixed top-0 right-0 h-full w-72 bg-black text-white p-4 text-xs shadow-xl overflow-y-auto transform transition-transform z-30 ${
-        isDebugOpen ? 'translate-x-0' : 'translate-x-full'
-      }`}>
-        <h2 className="font-bold text-sm mb-2">🧪 Debug Log</h2>
-        {logs.length === 0 ? (
-          <p className="text-gray-400">Waiting for login...</p>
-        ) : (
-          <ul className="space-y-1">
-            {logs.map((log, i) => (
-              <li key={i} className="text-green-300">{log}</li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      <form
-        onSubmit={handleLogin}
-        className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md relative overflow-hidden z-10"
-      >
-        {loading && (
-  <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-20">
-    <img src="/loader.gif" alt="Loading..." className="w-15 h-12" />
-  </div>
-)}
-        {/* Optional Background Logo */}
-        <div className="absolute bottom-0 left-0 w-full h-full flex justify-center items-end pointer-events-none select-none">
-        
+      <div className="flex flex-col md:flex-row justify-center items-center gap-12 max-w-6xl w-full">
+        {/* Left: Image mockup */}
+        <div className="hidden md:block">
+          <img
+            src="/clock-1.jpg"
+            alt="Phone preview"
+            className="h-[500px]"
+          />
         </div>
 
-        {/* Foreground Logo & Title */}
-        <div className="flex flex-col items-center mb-6 relative z-10">
-         
-          <h1 className="text-2xl font-bold text-center text-gray-800">Login to TradeMinutes</h1>
-        </div>
+        {/* Right: Login form */}
+        <div className={`rounded-md p-8 w-full max-w-sm ${isDarkMode ? 'bg-zinc-900 text-white' : 'bg-gray-100 text-black'} transition-colors duration-300`}>
+          <h1
+            onClick={() => router.push('/')}
+            className="text-4xl font-bold text-center mb-6 font-mono cursor-pointer hover:underline"
+          >
+            TradeMinutes
+          </h1>
 
-        {error && <p className="text-red-500 mb-4 text-sm text-center">{error}</p>}
+          <form onSubmit={handleLogin}>
+            {error && <p className="text-red-500 text-sm mb-2 text-center">{error}</p>}
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 mb-4 border border-gray-300 rounded-md text-sm text-gray-700 placeholder:text-gray-700"
-          required
-          disabled={loading}
-        />
+            <input
+              type="text"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={`w-full p-3 mb-3 rounded border ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-white border-gray-300 text-black'}`}
+              disabled={loading}
+              required
+            />
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-3 mb-6 border border-gray-300 rounded-md text-sm text-gray-700 placeholder:text-gray-700"
-          required
-          disabled={loading}
-        />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={`w-full p-3 mb-4 rounded border ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-white border-gray-300 text-black'}`}
+              disabled={loading}
+              required
+            />
 
-        <button
-          type="submit"
-          disabled={loading}
-          className={`bg-blue-600 text-white py-3 rounded-md w-full transition ${
-            loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'
-          }`}
-        >
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded font-bold text-white"
+            >
+              {loading ? 'Logging in...' : 'Log In'}
+            </button>
+          </form>
 
-        {/* Divider */}
-        <div className="my-6 text-center relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300" />
+          <div className="flex items-center my-4">
+            <div className="flex-grow h-px bg-zinc-700" />
+            <span className="px-2 text-zinc-400 text-sm">OR</span>
+            <div className="flex-grow h-px bg-zinc-700" />
           </div>
-          <div className="relative bg-white px-4 text-sm text-gray-500">or</div>
-        </div>
 
-        {/* GitHub Login */}
-        <button
-          type="button"
-          onClick={() => {
-            addLog('🔗 Redirecting to GitHub login...');
-            signIn('github');
-          }}
-          className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition"
-        >
-          Continue with GitHub
-        </button>
-
-        {/* Links */}
-        <div className="flex justify-between mt-6 text-sm text-blue-600">
           <button
-            type="button"
-            className="hover:underline"
+            onClick={() => signIn('github')}
+            className="flex items-center justify-center gap-2 text-blue-400 hover:underline w-full text-sm"
+          >
+            <img src="/github.png" alt="GitHub" className="w-4 h-4" />
+            Log in with Github
+          </button>
+
+          <p
             onClick={() => router.push('/forgot-password')}
+            className="text-sm text-blue-400 text-center mt-3 hover:underline cursor-pointer"
           >
-            Forgot Password?
-          </button>
-          <button
-            type="button"
-            className="hover:underline"
-            onClick={() => router.push('/register')}
-          >
-            Register New Account
-          </button>
+            Forgot password?
+          </p>
+
+          <p className={`text-sm text-center mt-4 ${isDarkMode ? 'text-white' : 'text-black'}`}>
+            Don’t have an account?{' '}
+            <span
+              onClick={() => router.push('/register')}
+              className="text-blue-500 cursor-pointer hover:underline"
+            >
+              Sign up
+            </span>
+          </p>
         </div>
-      </form>
+      </div>
     </div>
   );
 }
