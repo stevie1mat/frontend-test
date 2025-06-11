@@ -35,7 +35,7 @@ export default function ProfileDashboardPage() {
 
     const fetchProfile = async () => {
       try {
-        const res = await fetch('https://trademinutes-auth.onrender.com/api/auth/profile', {
+        const res = await fetch('http://localhost:8080/api/auth/profile', {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -82,8 +82,23 @@ export default function ProfileDashboardPage() {
           <button className="flex items-center gap-2 w-full text-left py-2 px-4 rounded bg-violet-600 text-white">
             <MdDashboard className="text-lg" /> Dashboard
           </button>
-          <button onClick={handleLogout} className="flex items-center gap-2 w-full text-left py-2 px-4 rounded text-black dark:text-white bg-white hover:bg-gray-200 dark:bg-zinc-800 dark:hover:bg-zinc-700">
-            <FiLogOut className="text-lg text-black dark:text-white" /> Logout
+           <button className="flex items-center gap-2 w-full text-left py-2 px-4 rounded bg-violet-600 text-white">
+            <MdDashboard className="text-lg" />
+            Book Appointment
+          </button>
+           <button className="flex items-center gap-2 w-full text-left py-2 px-4 rounded bg-violet-600 text-white">
+            <MdDashboard className="text-lg" />
+            My Profile
+          </button>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 w-full text-left py-2 px-4 rounded 
+                       text-black dark:text-white 
+                       bg-white hover:bg-gray-200 
+                       dark:bg-zinc-800 dark:hover:bg-zinc-700"
+          >
+            <FiLogOut className="text-lg text-black dark:text-white" />
+            Logout
           </button>
         </nav>
       </aside>
