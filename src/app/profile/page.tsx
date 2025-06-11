@@ -5,45 +5,78 @@ import { useRouter } from 'next/navigation';
 import { MdDashboard } from 'react-icons/md';
 import { FiLogOut } from 'react-icons/fi';
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 
 export default function ProfileDashboardPage() {
   const [profile, setProfile] = useState<{ name: string; email: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const router = useRouter();
+     const { data: session, status } = useSession();
+
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     router.push('/login');
   };
 
+useEffect(() => {
+
+  if (status === 'loading') return;
+
+  const savedTheme = localStorage.getItem('theme');
+  setIsDarkMode(savedTheme === 'dark');
+
+  const getToken = (): string | null => {
+    if (status === 'authenticated' && session?.accessToken) {
+      localStorage.setItem('token', session.accessToken);
+      return session.accessToken;
+    }
+
+    const stored = localStorage.getItem('token');
+    console.log('🧪 Using localStorage token:', stored);
+    return stored;
+  };
+
+  const fetchProfile = async () => {
+    const token = getToken();
+
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+
+    try {
+      console.log('🔁 Fetching profile with token:', token);
+      const res = await fetch('https://trademinutes-auth.onrender.com/api/auth/profile', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Profile fetch failed');
+    
+      setProfile(data);
+    } catch (err) {
+      console.error('Profile fetch error:', err);
+      router.push('/login');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Now call it
+  fetchProfile();
+}, [status, session, router]);
+
+
+
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    setIsDarkMode(savedTheme === 'dark');
-
-    const fetchProfile = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        router.push('/login');
-        return;
-      }
-
-      try {
-        const res = await fetch('https://trademinutes-auth.onrender.com/api/auth/profile', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || 'Failed to fetch profile');
-        setProfile(data);
-      } catch {
-        router.push('/login');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, [router]);
+    console.log("status",status, session)
+    if (status === 'authenticated' && session?.accessToken) {
+      localStorage.setItem('token', session.accessToken);
+      console.log('Access token saved to localStorage:', session.accessToken);
+    }
+  }, [status, session]);
 
   useEffect(() => {
     const root = document.documentElement;

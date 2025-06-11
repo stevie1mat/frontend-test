@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-// import {login} from "@/lib/actions/auth";
 import {signIn} from "next-auth/react";
 export default function LoginPage() {
   const router = useRouter();
@@ -170,8 +169,7 @@ export default function LoginPage() {
 
           <button
             type ="button"
-
-            onClick={() => signIn("github")}
+            onClick={() => signIn("github", { callbackUrl: "/profile" })}
             className="flex items-center justify-center gap-2 text-blue-400 hover:underline w-full text-sm"
           >
             <img src="/github.png" alt="GitHub" className="w-4 h-4" />
