@@ -194,21 +194,17 @@ export default function LoginPage() {
             <div className="flex-grow h-px bg-zinc-700" />
           </div>
 
-          <button
-            type="button"
-            onClick={async () => {
-  const res = await fetch('http://localhost:8080/api/auth/github', {
-    method: 'POST',
-  });
-  const data = await res.json();
-  localStorage.setItem('token', data.token);
-  router.push('/profile');
-}}
-            className="flex items-center justify-center gap-2 text-blue-400 hover:underline w-full text-sm"
-          >
-            <img src="/github.png" alt="GitHub" className="w-4 h-4" />
-            Log in with GitHub
-          </button>
+         <button
+  type="button"
+  onClick={() => {
+    window.location.href = 'http://localhost:8080/api/auth/github/login'; // or your deployed URL
+  }}
+  className="flex items-center justify-center gap-2 text-blue-400 hover:underline w-full text-sm"
+>
+  <img src="/github.png" alt="GitHub" className="w-4 h-4" />
+  Log in with GitHub
+</button>
+
 
           <p
             onClick={() => router.push('/forgot-password')}
