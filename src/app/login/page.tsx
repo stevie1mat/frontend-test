@@ -181,7 +181,7 @@ export default function LoginPage() {
   onClick={() => signIn("google", { callbackUrl: "/profile" })}
   className="flex items-center justify-center gap-2 text-red-500 hover:underline w-full text-sm mt-2"
 >
-  <img src="/google.png" alt="Google" className="w-4 h-4" />
+  <img src="/google.svg" alt="Google" className="w-4 h-4" />
   Log in with Google
 </button>
 
