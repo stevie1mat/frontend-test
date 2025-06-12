@@ -12,69 +12,71 @@ export default function ProfileDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const router = useRouter();
-     const { data: session, status } = useSession();
-
+  const { data: session, status } = useSession();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     router.push('/login');
   };
 
-useEffect(() => {
+  useEffect(() => {
+    if (status === 'loading') return;
 
-  if (status === 'loading') return;
+    const savedTheme = localStorage.getItem('theme');
+    setIsDarkMode(savedTheme === 'dark');
 
-  const savedTheme = localStorage.getItem('theme');
-  setIsDarkMode(savedTheme === 'dark');
+    const getToken = (): string | null => {
+      if (status === 'authenticated' && session?.accessToken) {
+        localStorage.setItem('token', session.accessToken);
+        return session.accessToken;
+      }
 
-  const getToken = (): string | null => {
-    if (status === 'authenticated' && session?.accessToken) {
-      localStorage.setItem('token', session.accessToken);
-      return session.accessToken;
-    }
+      const stored = localStorage.getItem('token');
+      console.log('🧪 Using localStorage token:', stored);
+      return stored;
+    };
 
-    const stored = localStorage.getItem('token');
-    console.log('🧪 Using localStorage token:', stored);
-    return stored;
-  };
+    const fetchProfile = async () => {
+      const token = getToken();
 
-  const fetchProfile = async () => {
-    const token = getToken();
+      if (!token) {
+        router.push('/login');
+        return;
+      }
 
-    if (!token) {
-      router.push('/login');
-      return;
-    }
+      try {
+        console.log('🔁 Fetching profile with token:', token);
+        const res = await fetch('https://trademinutes-auth.onrender.com/api/auth/profile', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-    try {
-      console.log('🔁 Fetching profile with token:', token);
-      const res = await fetch('https://trademinutes-auth.onrender.com/api/auth/profile', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+        const contentType = res.headers.get('content-type') || '';
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Profile fetch failed');
-    
-      setProfile(data);
-    } catch (err) {
-      console.error('Profile fetch error:', err);
-      router.push('/login');
-    } finally {
-      setLoading(false);
-    }
-  };
+        if (!contentType.includes('application/json')) {
+          const rawText = await res.text();
+          throw new Error(rawText || 'Invalid response format');
+        }
 
-  // ✅ Now call it
-  fetchProfile();
-}, [status, session, router]);
+        const data = await res.json();
 
+        if (!res.ok) throw new Error(data.error || 'Profile fetch failed');
 
+        setProfile(data);
+      } catch (err) {
+        console.error('❌ Profile fetch error:', err);
+        router.push('/login');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [status, session, router]);
 
   useEffect(() => {
-    console.log("status",status, session)
     if (status === 'authenticated' && session?.accessToken) {
       localStorage.setItem('token', session.accessToken);
-      console.log('Access token saved to localStorage:', session.accessToken);
+      console.log('✅ Access token saved:', session.accessToken);
     }
   }, [status, session]);
 
