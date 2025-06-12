@@ -44,7 +44,7 @@ export default function LoginPage() {
 
   try {
     addLog('🔌 Connecting to login endpoint...');
-    const res = await fetch('https://trademinutes-auth.onrender.com/api/auth/login', {
+    const res = await fetch('http://localhost:8080/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -197,7 +197,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={async () => {
-  const res = await fetch('https://trademinutes-auth.onrender.com/api/auth/github', {
+  const res = await fetch('http://localhost:8080/api/auth/github', {
     method: 'POST',
   });
   const data = await res.json();
