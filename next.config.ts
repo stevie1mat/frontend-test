@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+import path from 'path';
+
 const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
@@ -12,8 +14,13 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
-  
     ],
   },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  webpack: (config: any) => {
+    config.resolve.alias['@'] = path.resolve(__dirname, 'src');
+    return config;
+  },
 };
+
 export default nextConfig;

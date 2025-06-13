@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
-import ProtectedLayout from "./../../../components/layouts/ProtectedLayout";
+import ProtectedLayout from "@/components/layouts/ProtectedLayout";
 
 export default function BookAppointmentPage() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
