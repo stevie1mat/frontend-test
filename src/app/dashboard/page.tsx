@@ -106,9 +106,9 @@ export default function ProfileDashboardPage() {
         setProfile(data);
 
         // ─── if profile missing university, open dialog ───────────────────────
-        if (!data.university) {
-          setShowProfileDialog(true);
-        }
+        // if (!data.university) {
+        //   setShowProfileDialog(true);
+        // }
         // ──────────────────────────────────────────────────────────────────────
       } catch (error) {
         console.error('❌ Profile fetch error:', error);
@@ -149,6 +149,12 @@ export default function ProfileDashboardPage() {
           >
             <FiEdit className="text-lg text-black dark:text-white" /> My Profile
           </button>
+          <button
+  onClick={() => router.push('/book-appointment')}
+  className="flex items-center gap-2 w-full text-left py-2 px-4 rounded text-black dark:text-white bg-white hover:bg-gray-200 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+>
+  📅 Book Appointment
+</button>
           <button onClick={handleLogout} className="flex items-center gap-2 w-full text-left py-2 px-4 rounded text-black dark:text-white bg-white hover:bg-gray-200 dark:bg-zinc-800 dark:hover:bg-zinc-700">
             <FiPower className="text-lg text-black dark:text-white" /> Logout
           </button>
