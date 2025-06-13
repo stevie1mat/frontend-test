@@ -271,6 +271,24 @@ export default function ProfileDashboardPage() {
               </div>
             )}
 
+            {/* Step 2: Skills & interests */}
+            {profileStep === 2 && (
+              <div className="space-y-4">
+                <SkillTagInput /> {/* uses local state only */}
+                <div className="flex justify-between">
+                  <button onClick={() => setProfileStep(1)} className="text-sm text-gray-500 underline">← Back</button>
+                  <button
+                    onClick={() => {
+                      console.log('Submit profile:', { ...formData });
+                      setShowProfileDialog(false);
+                    }}
+                    className="bg-green-600 text-white px-4 py-2 rounded"
+                  >
+                    Save Profile
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
