@@ -196,14 +196,32 @@ export default function LoginPage() {
 
          <button
   type="button"
-  onClick={() => {
-    window.location.href = 'http://localhost:8080/api/auth/github/login'; // or your deployed URL
+  onClick={async () => {
+    const result = await signIn('github', { redirect: false });
+    if (result?.ok) {
+      const sessionRes = await fetch('/api/auth/session');
+      const session = await sessionRes.json();
+
+      const backendRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/github`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: session?.user?.email,
+          name: session?.user?.name,
+        }),
+      });
+
+      const backendData = await backendRes.json();
+      localStorage.setItem('token', backendData.token);
+      router.push('/profile');
+    }
   }}
   className="flex items-center justify-center gap-2 text-blue-400 hover:underline w-full text-sm"
 >
   <img src="/github.png" alt="GitHub" className="w-4 h-4" />
   Log in with GitHub
 </button>
+
 
 
           <p
