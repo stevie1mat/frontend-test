@@ -194,20 +194,23 @@ export default function LoginPage() {
             <div className="flex-grow h-px bg-zinc-700" />
           </div>
 
-       <button
-  onClick={() => signIn('github', { callbackUrl: '/github-auth' })}
-  className="flex items-center justify-center gap-2 text-blue-400 hover:underline w-full text-sm"
->
-  <img src="/github.png" alt="GitHub" className="w-4 h-4" />
-  Log in with GitHub
-</button>
-<button
-  onClick={() => signIn('google', { callbackUrl: '/google-auth' })}
-  className="flex items-center justify-center gap-2 text-blue-400 hover:underline w-full text-sm mt-2"
->
-  <img src="/google.png" alt="Google" className="w-4 h-4" />
-  Log in with Google
-</button>
+      <div className="flex justify-center gap-4 mt-4">
+  <button
+    onClick={() => signIn('github', { callbackUrl: '/github-auth' })}
+    className="w-10 h-10 bg-white border rounded-full flex items-center justify-center shadow hover:shadow-md"
+    title="Log in with GitHub"
+  >
+    <img src="/github.png" alt="GitHub" className="w-5 h-5" />
+  </button>
+  <button
+    onClick={() => signIn('google', { callbackUrl: '/google-auth' })}
+    className="w-10 h-10 bg-white border rounded-full flex items-center justify-center shadow hover:shadow-md"
+    title="Log in with Google"
+  >
+    <img src="/google.png" alt="Google" className="w-5 h-5" />
+  </button>
+</div>
+
 
 
 
