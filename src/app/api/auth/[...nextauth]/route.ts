@@ -1,34 +1,13 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
-import GitHubProvider from "next-auth/providers/github";
-import GoogleProvider from "next-auth/providers/google"; // ✅ import Google
+import NextAuth from 'next-auth';
+import GitHubProvider from 'next-auth/providers/github';
+import GoogleProvider from 'next-auth/providers/google';
+import type { NextAuthOptions } from 'next-auth';
 
-declare module "next-auth" {
-  interface Session {
-    user: {
-      id: string;
-      name?: string | null;
-      email?: string | null;
-      image?: string | null;
-    };
-    accessToken?: string;
-  }
-
-  interface JWT {
-    accessToken?: string;
-  }
-}
-
-// ✅ Auth options with GitHub + Google
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   providers: [
     GitHubProvider({
       clientId: process.env.AUTH_GITHUB_ID!,
       clientSecret: process.env.AUTH_GITHUB_SECRET!,
-      authorization: {
-        params: {
-          scope: "read:user user:email",
-        },
-      },
     }),
     GoogleProvider({
       clientId: process.env.AUTH_GOOGLE_ID!,
@@ -43,9 +22,6 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      if (session.user && token.sub) {
-        session.user.id = token.sub;
-      }
       session.accessToken = token.accessToken as string;
       return session;
     },
@@ -53,5 +29,7 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 };
 
+// ✅ Use this for Next.js App Router compatibility
 const handler = NextAuth(authOptions);
+
 export { handler as GET, handler as POST };
