@@ -22,11 +22,23 @@ export default function GoogleAuthPage() {
           }),
         });
 
-        const data = await res.json();
-        localStorage.setItem('token', data.token);
-        router.push('/profile');
+        const contentType = res.headers.get('content-type') || '';
+        const rawText = await res.text();
+
+        if (!contentType.includes('application/json')) {
+          console.error('❌ Invalid response:', rawText);
+          return;
+        }
+
+        const data = JSON.parse(rawText);
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          router.push('/profile');
+        } else {
+          console.error('❌ Token missing in response:', data);
+        }
       } catch (error) {
-        console.error('❌ Google sync failed', error);
+        console.error('❌ Google sync failed:', error);
       }
     };
 
