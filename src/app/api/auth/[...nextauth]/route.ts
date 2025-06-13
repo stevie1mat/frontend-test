@@ -1,6 +1,6 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
-
+import GoogleProvider from "next-auth/providers/google"; // ✅ import Google
 
 declare module "next-auth" {
   interface Session {
@@ -18,7 +18,7 @@ declare module "next-auth" {
   }
 }
 
-// ✅ Auth options
+// ✅ Auth options with GitHub + Google
 export const authOptions: NextAuthOptions = {
   providers: [
     GitHubProvider({
@@ -26,9 +26,13 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.AUTH_GITHUB_SECRET!,
       authorization: {
         params: {
-          scope: "read:user user:email", // ✅ this is required for access_token
+          scope: "read:user user:email",
         },
       },
+    }),
+    GoogleProvider({
+      clientId: process.env.AUTH_GOOGLE_ID!,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET!,
     }),
   ],
   callbacks: {
