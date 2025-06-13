@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 // Replace with your actual locations
 const locations = [
   { lat: 43.6532, lng: -79.3832, label: 'Toronto' },
+  { lat: 43.4532, lng: -79.4832, label: 'Toronto' },
   { lat: 45.5017, lng: -73.5673, label: 'Montreal' },
   { lat: 49.2827, lng: -123.1207, label: 'Vancouver' },
 ];

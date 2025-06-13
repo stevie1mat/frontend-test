@@ -73,7 +73,7 @@ export default function LoginPage() {
     localStorage.setItem('token', data.token);
     setSuccess('Login successful! Redirecting...');
     addLog('✅ Login successful, redirecting to /profile');
-    setTimeout(() => router.push('/profile'), 2000);
+    setTimeout(() => router.push('/dashboard'), 2000);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Something went wrong';
     setError(message);
