@@ -25,11 +25,11 @@ export default function BookAppointmentPage() {
 
   return (
     <DashboardWrapper>
-      <div className="flex bg-white rounded-xl shadow-md p-6">
+      <div className="flex bg-white rounded-xl shadow-xl p-6">
         {/* Sidebar Summary */}
         <div className="w-1/3 pr-8 border-r border-gray-200">
-          <div className="flex flex-col items-center text-center mb-6">
-            <img src="/avatar.jpg" alt="user" className="w-20 h-20 rounded-full mb-3" />
+          <div className="flex flex-col justify-center items-center text-center h-full">
+            <img src="https://cdn.pixabay.com/photo/2020/09/29/13/27/woman-5612838_1280.jpg" alt="user" className="w-60 h-60 rounded-full mb-3 object-cover" />
             <h2 className="text-lg font-semibold">Fatima Sy</h2>
             <p className="text-gray-500 text-sm">Client Check-in</p>
             <p className="text-gray-400 text-sm mt-2">🕒 30 min</p>
@@ -41,10 +41,10 @@ export default function BookAppointmentPage() {
         <div className="w-2/3 px-8">
           <h2 className="text-xl font-semibold mb-4">Select a Date & Time</h2>
 
-          <div className="flex items-center justify-between mb-2">
-            <button onClick={goToPreviousMonth} className="text-sm text-blue-600">←</button>
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <button onClick={goToPreviousMonth} className="text-blue-600 text-xl">←</button>
             <p className="text-lg font-semibold">{format(currentMonth, 'MMMM yyyy')}</p>
-            <button onClick={goToNextMonth} className="text-sm text-blue-600">→</button>
+            <button onClick={goToNextMonth} className="text-blue-600 text-xl">→</button>
           </div>
 
           {/* Date Grid */}

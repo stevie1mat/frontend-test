@@ -144,8 +144,13 @@ export default function UserProfileSummaryPage() {
 
           {/* ─── Profile Card ─── */}
           <div className="bg-white rounded-3xl shadow-lg p-6 w-full max-w-sm">
-            <Image src="/avatar.jpg" alt="User" width={800} height={600}
-                   className="w-full h-64 object-cover rounded-xl mb-4"/>
+            <Image
+  src="https://cdn.pixabay.com/photo/2020/09/29/13/27/woman-5612838_1280.jpg"
+  alt="User"
+  width={800}
+  height={600}
+  className="w-full h-64 object-cover rounded-xl mb-4"
+/>
 
             <h2 className="text-lg font-semibold mb-1">{profile.name}</h2>
 
