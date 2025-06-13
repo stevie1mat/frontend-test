@@ -239,7 +239,38 @@ export default function ProfileDashboardPage() {
           <div className="bg-white/90 p-6 rounded-lg shadow-xl w-full max-w-xl space-y-4 text-black">
             <h2 className="text-xl font-semibold">Complete Your Profile</h2>
 
-            
+            {/* Step 1: Basic academic info */}
+            {profileStep === 1 && (
+              <div className="space-y-3">
+                <input
+                  type="text"
+                  placeholder="College/University"
+                  value={formData.university}
+                  onChange={e => setFormData({ ...formData, university: e.target.value })}
+                  className="w-full px-3 py-2 border rounded bg-white text-black"
+                />
+                <input
+                  type="text"
+                  placeholder="Program/Major"
+                  value={formData.program}
+                  onChange={e => setFormData({ ...formData, program: e.target.value })}
+                  className="w-full px-3 py-2 border rounded bg-white text-black"
+                />
+                <input
+                  type="text"
+                  placeholder="Year of Study (e.g. 2nd Year BSc)"
+                  value={formData.yearOfStudy}
+                  onChange={e => setFormData({ ...formData, yearOfStudy: e.target.value })}
+                  className="w-full px-3 py-2 border rounded bg-white text-black"
+                />
+                <div className="text-right">
+                  <button onClick={() => setProfileStep(2)} className="bg-violet-600 text-white px-4 py-2 rounded">
+                    Next ➝
+                  </button>
+                </div>
+              </div>
+            )}
+
           </div>
         </div>
       )}
