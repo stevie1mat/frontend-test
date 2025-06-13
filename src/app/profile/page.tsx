@@ -135,7 +135,7 @@ export default function ProfileDashboardPage() {
             {/* Activity */}
             <div className={`p-6 rounded-xl shadow-md ${isDarkMode ? 'bg-zinc-900' : 'bg-white border border-gray-200'}`}>
               <h2 className="text-lg font-semibold mb-2">Activity Summary</h2>
-              <p className="text-sm">You've spent <span className="font-bold">3h 45m</span> learning this week.</p>
+              <p className="text-sm">You have spent <span className="font-bold">3h 45m</span> learning this week.</p>
               <p className="text-sm text-green-600 mt-1">+37 Credits Earned</p>
             </div>
 
