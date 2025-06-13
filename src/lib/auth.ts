@@ -1,4 +1,3 @@
-// lib/auth.ts
 import GitHub from 'next-auth/providers/github';
 import { NextAuthOptions } from 'next-auth';
 
@@ -10,7 +9,7 @@ GitHub({
   clientSecret: process.env.AUTH_GITHUB_SECRET!,
   authorization: {
     params: {
-      scope: "read:user user:email", // ✅ add this
+      scope: "read:user user:email", // 
     },
   },
 }),

@@ -1,7 +1,11 @@
-'use client';
+"use client";
 
-import AppLayout from './AppLayout';
+import ProtectedLayout from "./ProtectedLayout";
 
-export default function DashboardWrapper({ children }: { children: React.ReactNode }) {
-  return <AppLayout>{children}</AppLayout>;
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <ProtectedLayout>{children}</ProtectedLayout>; ;
+    </>
+  );
 }
