@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import ProtectedLayout from "@/components/layouts/ProtectedLayout";
+import ProtectedLayout from "@/components/Layout/ProtectedLayout";
 
 /**
  * User-facing profile dashboard (summary page)

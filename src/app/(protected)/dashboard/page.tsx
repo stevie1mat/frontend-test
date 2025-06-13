@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import ProtectedLayout from "@/components/layouts/ProtectedLayout";
+import ProtectedLayout from "@/components/Layout/ProtectedLayout";
 
 const Map = dynamic(() => import("@/components/OpenStreetMap"), { ssr: false });
 
