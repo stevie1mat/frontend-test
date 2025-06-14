@@ -9,15 +9,21 @@ import ProtectedLayout from "@/components/Layout/ProtectedLayout";
 const Map = dynamic(() => import("@/components/OpenStreetMap"), { ssr: false });
 
 // ─── added modal-related helper component ──────────────────────────────────────
-function SkillTagInput() {
+function SkillTagInput({
+  tags,
+  setTags,
+}: {
+  tags: string[];
+  setTags: (tags: string[]) => void;
+}) {
   const [input, setInput] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
 
   const addTag = () => {
-    if (input.trim() && !tags.includes(input.trim())) {
-      setTags([...tags, input.trim()]);
-      setInput("");
+    const trimmed = input.trim();
+    if (trimmed && !tags.includes(trimmed)) {
+      setTags([...tags, trimmed]);
     }
+    setInput("");
   };
 
   const removeTag = (tag: string) => {
@@ -63,6 +69,7 @@ function SkillTagInput() {
     </div>
   );
 }
+
 // ───────────────────────────────────────────────────────────────────────────────
 
 export default function ProfileDashboardPage() {
@@ -77,12 +84,42 @@ export default function ProfileDashboardPage() {
   // ─── new state for modal steps ──────────────────────────────────────────────
   const [showProfileDialog, setShowProfileDialog] = useState(false);
   const [profileStep, setProfileStep] = useState(1);
-  const [formData, setFormData] = useState({
-    university: "",
-    program: "",
-    yearOfStudy: "",
-    skills: [] as string[],
+
+
+ const [formData, setFormData] = useState({
+  university: "",
+  program: "",
+  yearOfStudy: "",
+  skills: [] as string[],
+});
+
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8081/api/profile";
+
+const updateProfile = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("No auth token");
+
+  const res = await fetch(`${API_BASE}/update-info`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      college: formData.university,
+      program: formData.program,
+      yearOfStudy: formData.yearOfStudy,
+      skills: formData.skills,
+    }),
   });
+
+  if (!res.ok) {
+    const msg = await res.text();
+    throw new Error(msg || "Update failed");
+  }
+};
+
   // ────────────────────────────────────────────────────────────────────────────
 
   const router = useRouter();
@@ -103,7 +140,7 @@ export default function ProfileDashboardPage() {
     const fetchProfile = async () => {
       try {
         const res = await fetch(
-          "https://trademinutes-auth.onrender.com/api/auth/profile",
+          "http://localhost:8080/api/profile/update-info",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -121,9 +158,9 @@ export default function ProfileDashboardPage() {
         setProfile(data);
 
         // ─── if profile missing university, open dialog ───────────────────────
-        // if (!data.university) {
-        //   setShowProfileDialog(true);
-        // }
+        if (!data.university) {
+          setShowProfileDialog(true);
+        }
         // ──────────────────────────────────────────────────────────────────────
       } catch (error) {
         console.error("❌ Profile fetch error:", error);
@@ -335,7 +372,10 @@ export default function ProfileDashboardPage() {
               {/* Step 2: Skills & interests */}
               {profileStep === 2 && (
                 <div className="space-y-4">
-                  <SkillTagInput /> {/* uses local state only */}
+                  <SkillTagInput
+  tags={formData.skills}
+  setTags={(tags) => setFormData({ ...formData, skills: tags })}
+/> {/* uses local state only */}
                   <div className="flex justify-between">
                     <button
                       onClick={() => setProfileStep(1)}
@@ -344,10 +384,17 @@ export default function ProfileDashboardPage() {
                       ← Back
                     </button>
                     <button
-                      onClick={() => {
-                        console.log("Submit profile:", { ...formData });
-                        setShowProfileDialog(false);
-                      }}
+                      onClick={async () => {
+  try {
+    await updateProfile();
+    alert("Profile saved ✔");
+    setShowProfileDialog(false);
+    router.refresh?.();        // refresh dashboard if using Next 14
+  } catch (e) {
+    alert((e as Error).message);
+  }
+}}
+
                       className="bg-green-600 text-white px-4 py-2 rounded"
                     >
                       Save Profile

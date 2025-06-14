@@ -1,11 +1,19 @@
 'use client';
 
 import Benefits from '@/components/Benefits';
+import BlogSection from '@/components/BlogSection';
+import CategoriesGrid from '@/components/CategoriesGrid';
 import FAQ from '@/components/FAQ';
+import FindHelpSection from '@/components/FindHelpSection';
 import Footer from '@/components/Footer';
+import HeroSection from '@/components/HeroSection';
 import HowItWorks from '@/components/HowItWorks';
+import HowItWorksSection from '@/components/HowItWorksSection';
 import Navbar from '@/components/Navbar';
 import Pricing from '@/components/Pricing';
+import Testimonials from '@/components/Testimonials';
+import TrendingServices from '@/components/TrendingServices';
+import WhyTradeMinutes from '@/components/WhyTradeMinutes';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -38,7 +46,7 @@ export default function HomePage() {
       </nav> */}
 
       {/* Hero Section */}
-      <section className="text-center pt-12 px-4 bg-gradient-to-b from-white to-blue-50">
+      {/* <section className="text-center pt-12 px-4 bg-gradient-to-b from-white to-blue-50">
         <div className="w-10 h-10 mx-auto mb-6">
           <Image src="/refresh.svg" alt="refresh icon" width={30} height={30} />
         </div>
@@ -69,52 +77,24 @@ export default function HomePage() {
             className="rounded-lg shadow-md"
           />
         </div>
-      </section>
-
+      </section> */}
+        <HeroSection />
       {/* Features Section */}
-      <section className="py-16 px-6 max-w-5xl mx-auto">
-        <div className="grid gap-10 sm:grid-cols-1 md:grid-cols-2">
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Smart Map & Task Matching</h3>
-            <p className="text-gray-600">
-              Browse nearby service requests and offers on an interactive map
-            </p>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Time Credit & Scheduling System</h3>
-            <p className="text-gray-600">
-              Earn and spend time credits for each completed or requested task
-            </p>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Trust & Community Profiles</h3>
-            <p className="text-gray-600">
-              Verified profiles show ID, neighborhood status, completed tasks, and skills
-            </p>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Time Credit & Scheduling System</h3>
-            <p className="text-gray-600">
-              Earn and spend time credits for each completed or requested task
-            </p>
-          </div>
-        </div>
+    
+<br/><br/>
+<CategoriesGrid />
+<FindHelpSection />
+
+
+<HowItWorksSection />
+<WhyTradeMinutes/>
+<TrendingServices />
+<Testimonials />
+
+<BlogSection />
        
        
-        {/* <div className="text-center mt-16 text-gray-400 text-sm">
-          <p>Trusted by</p>
-          <div className="flex flex-wrap justify-center space-x-4 mt-2">
-            <span>© GlobalBank</span>
-            <span>© Epicurious</span>
-            <span>© Acme Corp</span>
-          </div>
-        </div> */}
-        
-      </section>
-       <HowItWorks />
-        <Benefits />
-       <Pricing />
-        <FAQ />
+       
       <Footer />
     </main>
   );
