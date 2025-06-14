@@ -32,7 +32,7 @@ export default function HeroSection() {
     <ParticlesBackground />
   </div>
     <div className="absolute inset-0 bg-black/40 z-0" />
-     <div className="relative z-10 text-center px-4 text-white max-w-2xl">
+     <div className="relative z-10 text-center px-4 text-white max-w-6xl">
   <h1 className="text-4xl md:text-5xl font-bold mb-4">
     Exchange Skills. Earn Time Credits.
   </h1>
@@ -69,7 +69,7 @@ export default function HeroSection() {
   </div>
 
   {/* Button */}
-  <button className="bg-green-500 text-white text-lg font-semibold px-9 py-8 hover:bg-green-600 rounded-r-lg">
+  <button className="bg-green-500 text-white text-lg font-semibold px-13 py-8 hover:bg-green-600 rounded-r-lg">
     Search
   </button>
 </div>

@@ -80,7 +80,7 @@ export default function TrendingServices() {
   };
 
   return (
-    <section className="bg-[#f3fbfa] py-16 px-4">
+    <section className="bg-[#f3fbfa] py-30 px-4">
       <div className="max-w-7xl mx-auto">
         {/* heading */}
         <div className="flex items-center justify-between mb-10">
