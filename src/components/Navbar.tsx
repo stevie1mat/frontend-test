@@ -40,11 +40,11 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="bg-white border-b text-black w-full z-50">
+    <header className="bg-white shadow-md text-black w-full z-50">
       <div className="max-w-7xl mx-auto px-4 py-4 flex items-center">
         {/* Logo on left */}
         <Link href="/" className="text-xl font-bold">
-          <span className="text-black">TradeMinutes</span>
+          <span className="text-black">TradeMinutes.</span>
         </Link>
 
         {/* Spacer pushes the right section */}
