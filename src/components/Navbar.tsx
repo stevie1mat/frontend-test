@@ -66,18 +66,12 @@ export default function Navbar() {
                 { name: "Nearby", href: "/users/nearby" },
               ]}
             />
-            <Dropdown
-              label="Pages"
-              items={[
-                { name: "About", href: "/about" },
-                { name: "Pricing", href: "/pricing" },
-              ]}
-            />
+           <Link href="/about" className="hover:text-green-600">About</Link>
             <Link href="/contact" className="hover:text-green-600">Contact</Link>
           </nav>
 
           {/* Right buttons */}
-          <Link href="#" className="hover:text-green-600 text-sm">Become a Seller</Link>
+          <Link href="/seller" className="hover:text-green-600 text-sm">Become a Seller</Link>
           <Link href="/login" className="hover:text-green-600 text-sm">Sign in</Link>
           <Link href="/register">
             <button className="bg-green-500 text-white text-sm px-4 py-2 rounded hover:bg-green-600">

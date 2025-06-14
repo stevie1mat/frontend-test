@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import Navbar from "@/components/Navbar";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -127,25 +128,10 @@ export default function LoginPage() {
       </div>
 
       {/* Navbar */}
-      <nav
-        className={`${
-          isDarkMode ? "bg-zinc-900 text-white" : "bg-white text-black"
-        } shadow-md py-4 px-6 flex justify-between items-center`}
-      >
-        <h1
-          className="text-2xl font-bold font-mono cursor-pointer hover:underline"
-          onClick={() => router.push("/")}
-        >
-          TradeMinutes
-        </h1>
-        <button
-          onClick={() => setIsDarkMode(!isDarkMode)}
-          className="text-sm rounded border px-3 py-1 border-gray-400 bg-zinc-700 text-white hover:bg-zinc-600"
-        >
-          {isDarkMode ? "☀️ Light" : "🌙 Dark"}
-        </button>
-      </nav>
-
+      
+      <Navbar />
+     
+      
       {/* Content */}
       <div className="flex flex-col md:flex-row justify-center items-center min-h-[calc(100vh-80px)] px-4 gap-12">
         {/* Left: Image */}

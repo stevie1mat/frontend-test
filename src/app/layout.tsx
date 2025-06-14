@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SessionWrapper from "./../components/session-wrapper";
 import { ThemeProvider } from "next-themes";
+import 'leaflet/dist/leaflet.css';
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
