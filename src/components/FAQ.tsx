@@ -46,11 +46,11 @@ export default function FAQ() {
           Learn how TradeMinutes works and how to get the most out of it.
         </p>
 
-        <div className="space-y-4 text-left">
+        <div className="space-y-4  text-left">
           {faqData.map((item, index) => (
             <div
               key={index}
-              className={`rounded-xl p-6 transition border ${
+              className={`rounded-xl p-6 transition pl-15 pr-15 pt-8 pb-8 ${
                 openIndex === index
                   ? 'bg-[#EFFBF8] border-transparent'
                   : 'hover:bg-gray-50 border-gray-200'

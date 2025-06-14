@@ -51,18 +51,12 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-6 ml-auto">
           {/* Nav dropdowns */}
           <nav className="flex gap-6 text-sm font-medium items-center">
+           
             <Dropdown
-              label="Home"
+              label="Browse Services"
               items={[
-                { name: "Landing", href: "/" },
-                { name: "How It Works", href: "/how-it-works" },
-              ]}
-            />
-            <Dropdown
-              label="Browse Jobs"
-              items={[
-                { name: "By Category", href: "/jobs/category" },
-                { name: "All Jobs", href: "/jobs" },
+                { name: "By Category", href: "/services/category" },
+                { name: "All Services", href: "/services/all" },
               ]}
             />
             <Dropdown
@@ -101,8 +95,8 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {open && (
         <div className="md:hidden bg-white px-4 py-4 space-y-3 shadow-md text-sm">
-          <Link href="/">Home</Link>
-          <Link href="/jobs">Browse Jobs</Link>
+        
+          <Link href="/jobs">Browse Services</Link>
           <Link href="/users">Users</Link>
           <Link href="/about">Pages</Link>
           <Link href="/contact">Contact</Link>

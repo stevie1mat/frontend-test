@@ -63,21 +63,23 @@ const categories = [
   },
 ];
 
-export default function CategoriesGrid() {
+export default function CategoriesGrid({ showHeader = true }: { showHeader?: boolean }) {
   return (
     <section className="py-16 px-4 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-10">
-        <div>
-          <h2 className="text-3xl font-bold">Swap by Skill Category</h2>
-          <p className="text-gray-500 mt-1">
-            Inspiration from 1 800+ skill exchanges
-          </p>
+      {showHeader && (
+        <div className="flex items-center justify-between mb-10">
+          <div>
+            <h2 className="text-3xl font-bold">Swap by Skill Category</h2>
+            <p className="text-gray-500 mt-1">
+              Inspiration from 1 800+ skill exchanges
+            </p>
+          </div>
+          <button className="text-sm font-semibold text-gray-700 hover:text-black flex items-center">
+            All Categories <span className="ml-1">→</span>
+          </button>
         </div>
-        <button className="text-sm font-semibold text-gray-700 hover:text-black flex items-center">
-          All Categories <span className="ml-1">→</span>
-        </button>
-      </div>
+      )}
 
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">

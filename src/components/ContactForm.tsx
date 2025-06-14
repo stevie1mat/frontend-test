@@ -2,7 +2,7 @@
 
 export default function ContactForm() {
   return (
-    <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-xl mx-auto md:mx-0">
+    <div className="bg-white rounded-xl shadow-md pt-10 pb-10 p-8 w-full max-w-xl mx-auto md:mx-0">
       <h3 className="text-lg font-semibold text-gray-900 mb-1">Tell us about yourself</h3>
       <p className="text-sm text-gray-500 mb-6">
         Whether you have questions or you would just like to say hello, contact us.
