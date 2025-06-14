@@ -11,6 +11,7 @@ import HowItWorks from '@/components/HowItWorks';
 import HowItWorksSection from '@/components/HowItWorksSection';
 import Navbar from '@/components/Navbar';
 import Pricing from '@/components/Pricing';
+import TalentCallout from '@/components/TalentCallout';
 import Testimonials from '@/components/Testimonials';
 import TrendingServices from '@/components/TrendingServices';
 import WhyTradeMinutes from '@/components/WhyTradeMinutes';
@@ -83,16 +84,19 @@ export default function HomePage() {
     
 <br/><br/>
 <CategoriesGrid />
+<br/><br/>
 <FindHelpSection />
-
+<br/>
 
 <HowItWorksSection />
 <WhyTradeMinutes/>
 <TrendingServices />
+   <br/><br/>
 <Testimonials />
-
+   <br/><br/>   
+<TalentCallout/>
 <BlogSection />
-       
+       <br/><br/>
        
        
       <Footer />

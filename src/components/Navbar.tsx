@@ -3,59 +3,113 @@
 import Link from "next/link";
 import { useState } from "react";
 import { FaBars } from "react-icons/fa";
+import { Menu } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+
+function Dropdown({ label, items }: { label: string; items: { name: string; href: string }[] }) {
+  return (
+    <Menu as="div" className="relative inline-block text-left">
+      <Menu.Button className="inline-flex items-center gap-1 hover:text-green-500">
+        {label}
+        <ChevronDownIcon className="w-4 h-4" />
+      </Menu.Button>
+
+      <Menu.Items className="absolute z-50 mt-2 w-48 origin-top-right bg-white border border-gray-200 rounded-md shadow-lg focus:outline-none">
+        <div className="py-1">
+          {items.map((item, idx) => (
+            <Menu.Item key={idx}>
+              {({ active }) => (
+                <Link
+                  href={item.href}
+                  className={`block px-4 py-2 text-sm ${
+                    active ? "bg-gray-100 text-gray-900" : "text-gray-700"
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              )}
+            </Menu.Item>
+          ))}
+        </div>
+      </Menu.Items>
+    </Menu>
+  );
+}
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="bg-transparent backdrop-blur-sm text-white fixed top-5 left-0 w-full z-50">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-        {/* Logo */}
+    <header className="bg-white border-b text-black w-full z-50">
+      <div className="max-w-7xl mx-auto px-4 py-4 flex items-center">
+        {/* Logo on left */}
         <Link href="/" className="text-xl font-bold">
-          <span className="text-white">TradeMinutes</span>
+          <span className="text-black">TradeMinutes</span>
         </Link>
 
-        {/* Navigation */}
-        <nav className="hidden md:flex gap-6 text-md text-white">
-          <Link href="#" className="hover:text-gray-200">Home</Link>
-          <Link href="#" className="hover:text-gray-200">Browse Jobs</Link>
-          <Link href="#" className="hover:text-gray-200">Users</Link>
-          <Link href="#" className="hover:text-gray-200">Pages</Link>
-          <Link href="#" className="hover:text-gray-200">Contact</Link>
-        </nav>
+        {/* Spacer pushes the right section */}
+        <div className="hidden md:flex items-center gap-6 ml-auto">
+          {/* Nav dropdowns */}
+          <nav className="flex gap-6 text-sm font-medium items-center">
+            <Dropdown
+              label="Home"
+              items={[
+                { name: "Landing", href: "/" },
+                { name: "How It Works", href: "/how-it-works" },
+              ]}
+            />
+            <Dropdown
+              label="Browse Jobs"
+              items={[
+                { name: "By Category", href: "/jobs/category" },
+                { name: "All Jobs", href: "/jobs" },
+              ]}
+            />
+            <Dropdown
+              label="Users"
+              items={[
+                { name: "Top Rated", href: "/users/top" },
+                { name: "Nearby", href: "/users/nearby" },
+              ]}
+            />
+            <Dropdown
+              label="Pages"
+              items={[
+                { name: "About", href: "/about" },
+                { name: "Pricing", href: "/pricing" },
+              ]}
+            />
+            <Link href="/contact" className="hover:text-green-600">Contact</Link>
+          </nav>
 
-        {/* Right Side */}
-        <div className="hidden md:flex items-center gap-4">
-          <button className="text-white hover:text-gray-200">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
-            </svg>
-          </button>
-          <Link href="#" className="hover:text-gray-200">Become a Seller</Link>
-          <Link href="/login" className="hover:text-gray-200">Sign in</Link>
+          {/* Right buttons */}
+          <Link href="#" className="hover:text-green-600 text-sm">Become a Seller</Link>
+          <Link href="/login" className="hover:text-green-600 text-sm">Sign in</Link>
           <Link href="/register">
-            <button className="bg-white text-black px-4 py-1.5 rounded hover:bg-gray-200">
+            <button className="bg-green-500 text-white text-sm px-4 py-2 rounded hover:bg-green-600">
               Join
             </button>
           </Link>
         </div>
 
-        {/* Mobile menu toggle */}
-        <button onClick={() => setOpen(!open)} className="md:hidden text-white">
+        {/* Mobile toggle */}
+        <button onClick={() => setOpen(!open)} className="md:hidden ml-auto text-black">
           <FaBars size={20} />
         </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile Menu */}
       {open && (
-        <div className="md:hidden bg-black/80 text-white px-4 py-2 space-y-2 shadow-md">
-          <Link href="#">Home</Link>
-          <Link href="#">Browse Jobs</Link>
-          <Link href="#">Users</Link>
-          <Link href="#">Pages</Link>
-          <Link href="#">Contact</Link>
+        <div className="md:hidden bg-white px-4 py-4 space-y-3 shadow-md text-sm">
+          <Link href="/">Home</Link>
+          <Link href="/jobs">Browse Jobs</Link>
+          <Link href="/users">Users</Link>
+          <Link href="/about">Pages</Link>
+          <Link href="/contact">Contact</Link>
           <Link href="/login">Sign in</Link>
-          <Link href="/register">Join</Link>
+          <Link href="/register">
+            <button className="w-full bg-green-500 text-white py-2 rounded">Join</button>
+          </Link>
         </div>
       )}
     </header>

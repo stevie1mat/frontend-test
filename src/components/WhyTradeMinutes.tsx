@@ -29,9 +29,9 @@ const features = [
 export default function WhyTradeMinutes() {
   return (
     <section className="bg-white py-20 px-4">
-     <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-0 items-stretch overflow-hidden rounded-lg shadow-md">
+     <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-0 items-stretch overflow-hidden rounded-lg">
   {/* Left Content */}
-  <div className="bg-emerald-50 p-10 flex flex-col justify-center h-full">
+ <div className="bg-[#FAF6ED] p-10 pl-20 pr-20 pt-20 pb-20 flex flex-col justify-center h-full">
     <h2 className="text-3xl font-semibold mb-10">
       A whole new way to give & receive help in your community
     </h2>
