@@ -1,64 +1,116 @@
 "use client";
 
+import { useState } from "react";
+import CreateListingModal from "../CreateTaskModal"; // Update if path is different
 import ProtectedLayout from "@/components/Layout/ProtectedLayout";
-import { useRouter } from "next/navigation";
 
 export default function TaskListPage() {
-  const router = useRouter();
-
-  const tasks = [
-    { title: "Fix login bug", status: "pending", credits: 20 },
-    { title: "Write onboarding doc", status: "completed", credits: 30 },
-    { title: "Add dark mode support", status: "completed", credits: 50 },
-    { title: "Update API docs", status: "pending", credits: 10 },
+  const allTasks = [
+    {
+      id: 1,
+      title: "Offer: Grocery Pickup",
+      type: "offer",
+      status: "pending",
+      credits: 10,
+    },
+    {
+      id: 2,
+      title: "Request: Help with Homework",
+      type: "request",
+      status: "pending",
+      credits: 15,
+    },
+    {
+      id: 3,
+      title: "Offer: Yoga Class",
+      type: "offer",
+      status: "completed",
+      credits: 20,
+    },
+    {
+      id: 4,
+      title: "Request: Dog Walking",
+      type: "request",
+      status: "pending",
+      credits: 8,
+    },
   ];
+
+  const [filter, setFilter] = useState("all");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const filteredTasks =
+    filter === "all"
+      ? allTasks
+      : allTasks.filter((task) => task.type === filter);
 
   return (
     <ProtectedLayout>
       <div className="min-h-screen bg-gray-100 p-8">
-        {/* Header + Create Button */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-semibold">My Tasks</h1>
-          <button
-            className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-xl text-sm font-medium shadow hover:scale-105 transition"
-            onClick={() => router.push("/tasks/create")}
-          >
-            ➕ Create Task
-          </button>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <h1 className="text-2xl font-semibold">Community Listings</h1>
+
+          <div className="flex items-center gap-4">
+            <select
+              className="border rounded-xl px-4 py-2 text-sm bg-white"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+            >
+              <option value="all">All</option>
+              <option value="offer">Offers</option>
+              <option value="request">Requests</option>
+            </select>
+
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-xl text-sm font-medium shadow hover:scale-105 transition"
+            >
+              ➕ Create Listing
+            </button>
+          </div>
         </div>
 
-        {/* Task Grid */}
+        {/* Task Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tasks.map((task, index) => (
+          {filteredTasks.map((task) => (
             <div
-              key={index}
-              className="bg-white rounded-3xl p-5 shadow-md hover:shadow-xl transition"
+              key={task.id}
+              className="bg-white rounded-3xl p-5 shadow-md hover:shadow-xl"
             >
+              <span
+                className={`text-xs font-semibold px-3 py-1 rounded-full mb-2 inline-block ${
+                  task.type === "offer"
+                    ? "bg-blue-100 text-blue-700"
+                    : "bg-yellow-100 text-yellow-700"
+                }`}
+              >
+                {task.type === "offer" ? "Offer" : "Request"}
+              </span>
+
               <h3 className="text-lg font-semibold mb-1">{task.title}</h3>
+
               <p
                 className={`text-xs mb-2 inline-block px-3 py-1 rounded-full ${
                   task.status === "completed"
                     ? "bg-green-100 text-green-700"
-                    : "bg-yellow-100 text-yellow-700"
+                    : "bg-orange-100 text-orange-700"
                 }`}
               >
                 {task.status === "completed" ? "✅ Completed" : "🕒 Pending"}
               </p>
+
               <p className="text-sm font-medium text-gray-600 mb-4">
                 Credits: {task.credits} 🪙
               </p>
-
-              <div className="flex justify-end gap-2 text-sm">
-                <button className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">
-                  Edit
-                </button>
-                <button className="px-3 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200">
-                  Delete
-                </button>
-              </div>
             </div>
           ))}
         </div>
+
+        {/* Create Listing Modal */}
+        <CreateListingModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
       </div>
     </ProtectedLayout>
   );
