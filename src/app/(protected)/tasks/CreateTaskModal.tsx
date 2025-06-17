@@ -22,11 +22,50 @@ export default function CreateTaskModal({
     availability: [{ date: "", timeFrom: "", timeTo: "" }],
   });
 
+  const [locationSuggestions, setLocationSuggestions] = useState<any[]>([]);
+  const token = localStorage.getItem("token");
+
+  const MAPBOX_TOKEN =
+    "pk.eyJ1IjoibmVlbGFtZ2F1Y2hhbiIsImEiOiJjbWMwbzg0dXgwNGlnMmxwcmlncWVycnBnIn0.ARZnElbDY2SOiInY94w6aA"; // Replace with your own
+
   if (!isOpen) return null;
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleLocationInput = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const query = e.target.value;
+    setFormData((prev) => ({ ...prev, location: query }));
+
+    if (query.length > 2) {
+      try {
+        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          query + " Toronto"
+        )}.json?access_token=${MAPBOX_TOKEN}&autocomplete=true&country=CA&types=address&limit=5`;
+
+        const res = await fetch(url);
+        const data = await res.json();
+        setLocationSuggestions(data.features);
+      } catch (err) {
+        console.error("Mapbox error:", err);
+      }
+    } else {
+      setLocationSuggestions([]);
+    }
+  };
+
+  const handleLocationSelect = (place: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      location: place.place_name,
+      latitude: place.geometry.coordinates[1],
+      longitude: place.geometry.coordinates[0],
+    }));
+    setLocationSuggestions([]);
   };
 
   const handleAvailabilityChange = (field: string, value: string) => {
@@ -35,10 +74,44 @@ export default function CreateTaskModal({
     setFormData((prev) => ({ ...prev, availability: updated }));
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log("Creating Task:", formData);
-    onClose(); // close modal after submit
+
+    const { timeFrom, timeTo } = formData.availability[0];
+    if (timeFrom >= timeTo) {
+      alert("⏰ 'Time From' must be earlier than 'Time To'");
+      return;
+    }
+
+    const payload = {
+      ...formData,
+      credits: Number(formData.credits),
+    };
+
+    console.log("Submitting Payload:", payload);
+
+    try {
+      const res = await fetch("http://localhost:8084/api/tasks/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("Server error:", errorText);
+        alert("❌ Failed to create task.");
+      } else {
+        alert("✅ Task created successfully!");
+        onClose();
+      }
+    } catch (err) {
+      console.error("Network error:", err);
+      alert("❌ Network error occurred.");
+    }
   };
 
   return (
@@ -75,14 +148,31 @@ export default function CreateTaskModal({
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input
-              type="text"
-              name="location"
-              placeholder="Location"
-              className="border px-4 py-2 rounded-xl"
-              value={formData.location}
-              onChange={handleChange}
-            />
+            <div className="relative">
+              <input
+                type="text"
+                name="location"
+                placeholder="Enter a Canadian location"
+                className="border px-4 py-2 rounded-xl w-full"
+                value={formData.location}
+                onChange={handleLocationInput}
+                required
+              />
+              {locationSuggestions.length > 0 && (
+                <ul className="absolute z-10 bg-white border rounded-xl mt-1 w-full max-h-48 overflow-y-auto shadow">
+                  {locationSuggestions.map((place, index) => (
+                    <li
+                      key={index}
+                      className="px-4 py-2 hover:bg-purple-100 cursor-pointer"
+                      onClick={() => handleLocationSelect(place)}
+                    >
+                      {place.place_name}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
             <select
               name="locationType"
               className="border px-4 py-2 rounded-xl"
@@ -92,25 +182,6 @@ export default function CreateTaskModal({
               <option value="in-person">In-person</option>
               <option value="remote">Remote</option>
             </select>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input
-              type="number"
-              name="latitude"
-              placeholder="Latitude (auto-fill)"
-              className="border px-4 py-2 rounded-xl"
-              value={formData.latitude}
-              onChange={handleChange}
-            />
-            <input
-              type="number"
-              name="longitude"
-              placeholder="Longitude (auto-fill)"
-              className="border px-4 py-2 rounded-xl"
-              value={formData.longitude}
-              onChange={handleChange}
-            />
           </div>
 
           <input
