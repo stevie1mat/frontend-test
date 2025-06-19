@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import CreateListingModal from "../CreateTaskModal"; // Update if path is different
+import CreateListingModal from "../CreateTaskModal"; // Adjust path if needed
 import ProtectedLayout from "@/components/Layout/ProtectedLayout";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function TaskListPage() {
   const allTasks = [
@@ -110,7 +112,9 @@ export default function TaskListPage() {
         <CreateListingModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
+          showToast={(msg, type) => toast[type](msg)}
         />
+        <ToastContainer position="top-right" autoClose={3000} />
       </div>
     </ProtectedLayout>
   );

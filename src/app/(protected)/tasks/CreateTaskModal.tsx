@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface CreateTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
+  showToast: (msg: string, type: "success" | "error") => void;
 }
 
 export default function CreateTaskModal({
   isOpen,
   onClose,
+  showToast,
 }: CreateTaskModalProps) {
   const [formData, setFormData] = useState({
     title: "",
@@ -23,10 +25,58 @@ export default function CreateTaskModal({
   });
 
   const [locationSuggestions, setLocationSuggestions] = useState<any[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const token = localStorage.getItem("token");
+  const API_BASE_URL =
+    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8084";
 
   const MAPBOX_TOKEN =
-    "pk.eyJ1IjoibmVlbGFtZ2F1Y2hhbiIsImEiOiJjbWMwbzg0dXgwNGlnMmxwcmlncWVycnBnIn0.ARZnElbDY2SOiInY94w6aA"; // Replace with your own
+    "pk.eyJ1IjoibmVlbGFtZ2F1Y2hhbiIsImEiOiJjbWMwbzg0dXgwNGlnMmxwcmlncWVycnBnIn0.ARZnElbDY2SOiInY94w6aA";
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/tasks/categories`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await res.json();
+        setCategories(data);
+      } catch (err) {
+        console.error("Failed to fetch categories", err);
+        showToast("❌ Failed to load categories.", "error");
+      }
+    };
+
+    if (isOpen) {
+      fetchCategories();
+    }
+  }, [isOpen, showToast]);
+
+  const generateTimeOptions = () => {
+    const options = [];
+    for (let hour = 6; hour <= 23; hour++) {
+      for (let min = 0; min < 60; min += 30) {
+        const time = `${hour.toString().padStart(2, "0")}:${min
+          .toString()
+          .padStart(2, "0")}`;
+        const label = new Date(`1970-01-01T${time}`).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        options.push(
+          <option key={time} value={time}>
+            {label}
+          </option>
+        );
+      }
+    }
+    return options;
+  };
 
   if (!isOpen) return null;
 
@@ -52,6 +102,7 @@ export default function CreateTaskModal({
         setLocationSuggestions(data.features);
       } catch (err) {
         console.error("Mapbox error:", err);
+        showToast("❌ Failed to fetch locations.", "error");
       }
     } else {
       setLocationSuggestions([]);
@@ -77,21 +128,31 @@ export default function CreateTaskModal({
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    const { timeFrom, timeTo } = formData.availability[0];
+    const { date, timeFrom, timeTo } = formData.availability[0];
+
+    if (!date) {
+      showToast("❌ Please select a date.", "error");
+      return;
+    }
+
+    if (!timeFrom || !timeTo) {
+      showToast("❌ Please select both start and end times.", "error");
+      return;
+    }
+
     if (timeFrom >= timeTo) {
-      alert("⏰ 'Time From' must be earlier than 'Time To'");
+      showToast("⏰ 'Time From' must be earlier than 'Time To'", "error");
       return;
     }
 
     const payload = {
       ...formData,
+      category: selectedCategory,
       credits: Number(formData.credits),
     };
 
-    console.log("Submitting Payload:", payload);
-
     try {
-      const res = await fetch("http://localhost:8084/api/tasks/create", {
+      const res = await fetch(`${API_BASE_URL}/api/tasks/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,14 +164,14 @@ export default function CreateTaskModal({
       if (!res.ok) {
         const errorText = await res.text();
         console.error("Server error:", errorText);
-        alert("❌ Failed to create task.");
+        showToast("❌ Failed to create task.", "error");
       } else {
-        alert("✅ Task created successfully!");
+        showToast("✅ Task created successfully!", "success");
         onClose();
       }
     } catch (err) {
       console.error("Network error:", err);
-      alert("❌ Network error occurred.");
+      showToast("❌ Network error occurred.", "error");
     }
   };
 
@@ -127,6 +188,21 @@ export default function CreateTaskModal({
           📝 Create Task
         </h2>
         <form onSubmit={handleSubmit} className="space-y-5">
+          <select
+            name="category"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="w-full border px-4 py-2 rounded-xl"
+            required
+          >
+            <option value="">Select a category</option>
+            {categories.map((cat, idx) => (
+              <option key={idx} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+
           <input
             type="text"
             name="title"
@@ -200,23 +276,32 @@ export default function CreateTaskModal({
               value={formData.availability[0].date}
               onChange={(e) => handleAvailabilityChange("date", e.target.value)}
               className="border px-4 py-2 rounded-xl"
+              required
             />
-            <input
-              type="time"
+
+            <select
               value={formData.availability[0].timeFrom}
               onChange={(e) =>
                 handleAvailabilityChange("timeFrom", e.target.value)
               }
               className="border px-4 py-2 rounded-xl"
-            />
-            <input
-              type="time"
+              required
+            >
+              <option value="">From</option>
+              {generateTimeOptions()}
+            </select>
+
+            <select
               value={formData.availability[0].timeTo}
               onChange={(e) =>
                 handleAvailabilityChange("timeTo", e.target.value)
               }
               className="border px-4 py-2 rounded-xl"
-            />
+              required
+            >
+              <option value="">To</option>
+              {generateTimeOptions()}
+            </select>
           </div>
 
           <div className="text-center pt-4">

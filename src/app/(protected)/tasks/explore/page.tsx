@@ -9,11 +9,13 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
 
   const token = localStorage.getItem("token");
+  const API_BASE_URL =
+    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8084";
 
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const res = await fetch("http://localhost:8084/api/tasks/get/all", {
+        const res = await fetch(`${API_BASE_URL}/api/tasks/get/all`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

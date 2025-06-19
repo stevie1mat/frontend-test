@@ -158,10 +158,6 @@ export default function TaskMap({ tasks }: { tasks: any[] }) {
                     <span>{task.locationType || "Unspecified"}</span>
                   </div>
 
-                  <p className="text-[10px] text-gray-400 mb-1">
-                    ID: {task.id}
-                  </p>
-
                   <button className="w-full text-center text-xs py-2 rounded-md bg-green-100 text-green-800 font-medium">
                     View Task ↗
                   </button>
