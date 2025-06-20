@@ -49,7 +49,7 @@ export default function TaskListPage() {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<number | null>(null);
   const API_BASE_URL =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:8084";
+    process.env.NEXT_PUBLIC_TASK_API_URL || "http://localhost:8084";
 
   const fetchTasks = () => {
     const token = localStorage.getItem("token");

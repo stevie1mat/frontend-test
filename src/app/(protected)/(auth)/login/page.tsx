@@ -49,7 +49,7 @@ export default function LoginPage() {
     try {
       addLog("🔌 Connecting to login endpoint...");
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+        `${process.env.NEXT_PUBLIC_AUTH_API_URL}/api/auth/login`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -128,10 +128,9 @@ export default function LoginPage() {
       </div>
 
       {/* Navbar */}
-      
+
       <Navbar />
-     
-      
+
       {/* Content */}
       <div className="flex flex-col md:flex-row justify-center items-center min-h-[calc(100vh-80px)] px-4 gap-12">
         {/* Left: Image */}

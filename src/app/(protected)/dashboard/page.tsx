@@ -95,7 +95,8 @@ export default function ProfileDashboardPage() {
     skills: [] as string[],
   });
 
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081";
+  const API_BASE =
+    process.env.NEXT_PUBLIC_PROFILE_API_URL || "http://localhost:8081";
 
   const updateProfile = async () => {
     const token = localStorage.getItem("token");
@@ -141,7 +142,7 @@ export default function ProfileDashboardPage() {
     const fetchProfile = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/auth/profile`,
+          `${process.env.NEXT_PUBLIC_AUTH_API_URL}/api/auth/profile`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
