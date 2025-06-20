@@ -258,10 +258,10 @@ export default function ProfileDashboardPage() {
                 }`}
               >
                 <h2 className="text-lg font-semibold mb-4">
-                  Welcome, {profile.name}
+                  Welcome, {profile.Name}
                 </h2>
                 <p className="text-sm mb-2">
-                  Email: <span className="font-medium">{profile.email}</span>
+                  Email: <span className="font-medium">{profile.Email}</span>
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   Your dashboard metrics will appear below.
