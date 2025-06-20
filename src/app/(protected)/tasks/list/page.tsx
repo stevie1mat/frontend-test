@@ -7,15 +7,15 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 interface Availability {
-  date: string;
-  timeFrom: string;
-  timeTo: string;
+  Date: string;
+  TimeFrom: string;
+  TimeTo: string;
 }
 
 interface Author {
   id: string;
-  name: string;
-  email: string;
+  Name: string;
+  Email: string;
 }
 
 interface Task {

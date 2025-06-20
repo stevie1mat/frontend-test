@@ -7,12 +7,12 @@ import ProtectedLayout from "@/components/Layout/ProtectedLayout";
 
 export default function UserProfileSummaryPage() {
   const [profile, setProfile] = useState<{
-    name: string;
-    email: string;
+    Name: string;
+    Email: string;
     College?: string;
     Program?: string;
     YearOfStudy?: string;
-    skills?: string[];
+    Skills?: string[];
   } | null>(null);
 
   const [tasks, setTasks] = useState<any[]>([]);
@@ -102,7 +102,7 @@ export default function UserProfileSummaryPage() {
                 height={600}
                 className="w-full h-64 object-cover rounded-xl mb-4"
               />
-              <h2 className="text-lg font-semibold mb-1">{profile.name}</h2>
+              <h2 className="text-lg font-semibold mb-1">{profile.Name}</h2>
               <p className="text-xs text-gray-400 mb-2">
                 Last login: 12 Jun 2025, 22:10
               </p>
@@ -116,7 +116,7 @@ export default function UserProfileSummaryPage() {
               <p className="text-sm text-gray-500 mb-2">
                 Email: {profile.Email}
               </p>
-              {profile.skills && profile.skills.length > 0 && (
+              {profile.skills && profile.Skills.length > 0 && (
                 <div className="mt-4">
                   <p className="text-sm font-medium mb-2">Skills:</p>
                   <div className="flex flex-wrap gap-2">

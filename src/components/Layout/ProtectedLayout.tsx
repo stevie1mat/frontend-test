@@ -6,9 +6,10 @@ import Sidebar from "../common/Sidebar";
 
 interface LayoutProps {
   children: ReactNode;
+  headerName?: string;
 }
 
-export default function ProtectedLayout({ children }: LayoutProps) {
+export default function ProtectedLayout({ children, headerName }: LayoutProps) {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const pathname = usePathname();
 
@@ -41,7 +42,9 @@ export default function ProtectedLayout({ children }: LayoutProps) {
       <main className="flex-1 p-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-semibold capitalize">
-            {pathname?.split("/").pop()?.replace("-", " ")}
+            {headerName
+              ? headerName
+              : pathname?.split("/").pop()?.replace("-", " ")}
           </h1>
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}

@@ -4,6 +4,18 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L, { LatLngExpression } from "leaflet";
+import Link from "next/link";
+
+interface Author {
+  id: string;
+  Name: string;
+  Email: string;
+}
+interface Availability {
+  Date: string;
+  TimeFrom: string;
+  TimeTo: string;
+}
 
 interface Task {
   id: string;
@@ -18,6 +30,8 @@ interface Task {
     name: string;
     avatar?: string;
   };
+  author?: Author;
+  availability: Availability[];
 }
 
 // Marker styles
@@ -72,6 +86,8 @@ export default function TaskMap({ tasks }: { tasks: any[] }) {
       credits: t.Credits,
       locationType: t.LocationType,
       createdBy: t.CreatedBy,
+      author: t.Author,
+      availability: t.Availability,
     }))
     .filter((task) => task.latitude !== 0 && task.longitude !== 0);
 
@@ -123,7 +139,7 @@ export default function TaskMap({ tasks }: { tasks: any[] }) {
           const avatar = task.createdBy?.avatar?.trim()
             ? task.createdBy.avatar
             : "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-          const name = task.createdBy?.name || "Anonymous";
+          const name = task.author?.Name;
 
           return (
             <Marker
@@ -147,10 +163,6 @@ export default function TaskMap({ tasks }: { tasks: any[] }) {
                     </div>
                   </div>
 
-                  <p className="text-xs text-yellow-500 font-medium mb-2">
-                    💰 {task.credits} credits
-                  </p>
-
                   <div className="grid grid-cols-2 gap-y-1 text-[11px] text-gray-600 mb-2">
                     <span className="font-medium">Location</span>
                     <span>{task.location}</span>
@@ -158,9 +170,23 @@ export default function TaskMap({ tasks }: { tasks: any[] }) {
                     <span>{task.locationType || "Unspecified"}</span>
                   </div>
 
-                  <button className="w-full text-center text-xs py-2 rounded-md bg-green-100 text-green-800 font-medium">
+                  {task.availability?.length > 0 && (
+                    <p className="text-xs text-gray-500 mb-1">
+                      📅 {task.availability[0].Date} — ⏰{" "}
+                      {task.availability[0].TimeFrom} to{" "}
+                      {task.availability[0].TimeTo}
+                    </p>
+                  )}
+                  <p className="text-xs text-yellow-500 font-medium mb-2">
+                    💰 {task.credits} credits
+                  </p>
+
+                  <Link
+                    href={`/tasks/view/${task.id}`}
+                    className="inline-block w-full text-center text-sm py-2 px-3 rounded-lg bg-green-100 "
+                  >
                     View Task ↗
-                  </button>
+                  </Link>
                 </div>
               </Popup>
             </Marker>
