@@ -95,14 +95,13 @@ export default function ProfileDashboardPage() {
     skills: [] as string[],
   });
 
-  const API_BASE =
-    process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8081/api/profile";
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081";
 
   const updateProfile = async () => {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("No auth token");
 
-    const res = await fetch(`${API_BASE}/update-info`, {
+    const res = await fetch(`${API_BASE}/api/profile/update-info`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -163,41 +162,55 @@ export default function ProfileDashboardPage() {
 
         // Handle case-sensitive field names from API
         const profileData = {
-          university: data.university || data.University || data.college || data.College || "",
-          program: data.program || data.Program || data.major || data.Major || "",
-          yearOfStudy: data.yearOfStudy || data.YearOfStudy || data.year || data.Year || ""
+          university:
+            data.university ||
+            data.University ||
+            data.college ||
+            data.College ||
+            "",
+          program:
+            data.program || data.Program || data.major || data.Major || "",
+          yearOfStudy:
+            data.yearOfStudy ||
+            data.YearOfStudy ||
+            data.year ||
+            data.Year ||
+            "",
         };
 
         // Check if the fields exist and are not empty strings
-        const hasUniversity = profileData.university && profileData.university.trim() !== "";
-        const hasProgram = profileData.program && profileData.program.trim() !== "";
-        const hasYearOfStudy = profileData.yearOfStudy && profileData.yearOfStudy.trim() !== "";
+        const hasUniversity =
+          profileData.university && profileData.university.trim() !== "";
+        const hasProgram =
+          profileData.program && profileData.program.trim() !== "";
+        const hasYearOfStudy =
+          profileData.yearOfStudy && profileData.yearOfStudy.trim() !== "";
 
         console.log("Processed field values:", profileData);
 
         console.log("Field status:", {
           hasUniversity,
           hasProgram,
-          hasYearOfStudy
+          hasYearOfStudy,
         });
 
         setProfile({
           ...data,
           university: profileData.university,
           program: profileData.program,
-          yearOfStudy: profileData.yearOfStudy
+          yearOfStudy: profileData.yearOfStudy,
         });
 
         // Only show dialog if any required field is missing or empty
         if (!hasUniversity || !hasProgram || !hasYearOfStudy) {
           console.log("Showing profile dialog - Missing fields detected");
           setShowProfileDialog(true);
-          setFormData(prev => ({
+          setFormData((prev) => ({
             ...prev,
             university: profileData.university.trim(),
             program: profileData.program.trim(),
             yearOfStudy: profileData.yearOfStudy.trim(),
-            skills: Array.isArray(data.skills) ? data.skills : []
+            skills: Array.isArray(data.skills) ? data.skills : [],
           }));
         } else {
           console.log("All fields present - Not showing dialog");
@@ -408,8 +421,14 @@ export default function ProfileDashboardPage() {
                   <div className="text-right">
                     <button
                       onClick={() => {
-                        if (!formData.university || !formData.program || !formData.yearOfStudy) {
-                          setFormError("Please fill in all fields before continuing.");
+                        if (
+                          !formData.university ||
+                          !formData.program ||
+                          !formData.yearOfStudy
+                        ) {
+                          setFormError(
+                            "Please fill in all fields before continuing."
+                          );
                           return;
                         }
                         setFormError("");
@@ -428,7 +447,9 @@ export default function ProfileDashboardPage() {
                 <div className="space-y-4">
                   <SkillTagInput
                     tags={formData.skills}
-                    setTags={(tags) => setFormData({ ...formData, skills: tags })}
+                    setTags={(tags) =>
+                      setFormData({ ...formData, skills: tags })
+                    }
                   />
                   <div className="flex justify-between">
                     <button
