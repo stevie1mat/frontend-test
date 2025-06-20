@@ -59,7 +59,7 @@ export default function RegisterPage() {
     try {
       addLog("🔌 Connecting to registration endpoint...");
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_AUTH_API_URL}api/auth/register`,
+        `${process.env.NEXT_PUBLIC_AUTH_API_URL}/api/auth/register`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
