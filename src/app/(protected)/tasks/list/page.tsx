@@ -12,6 +12,12 @@ interface Availability {
   timeTo: string;
 }
 
+interface Author {
+  id: string;
+  name: string;
+  email: string;
+}
+
 interface Task {
   id: number;
   title: string;
@@ -24,6 +30,7 @@ interface Task {
   availability: Availability[];
   type?: string;
   status?: string;
+  author?: Author;
 }
 
 function normalizeTask(raw: any): Task {
@@ -39,6 +46,7 @@ function normalizeTask(raw: any): Task {
     availability: raw.Availability,
     type: raw.Type,
     status: raw.Status,
+    author: raw.Author,
   };
 }
 
@@ -148,7 +156,7 @@ export default function TaskListPage() {
                 </p>
                 {task.availability?.length > 0 && (
                   <p className="text-xs text-gray-500 mb-1">
-                    📅 {task.availability[0].date} — ⏰{" "}
+                    📅 {task.availability[0].Date} — ⏰{" "}
                     {task.availability[0].TimeFrom} to{" "}
                     {task.availability[0].TimeTo}
                   </p>
@@ -156,6 +164,12 @@ export default function TaskListPage() {
                 <p className="text-sm font-medium text-gray-700">
                   🪙 {task.credits} credits
                 </p>
+                {task.author && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    👤 Listed by <strong>{task.author.name}</strong>{" "}
+                    {task.author.Name} ({task.author.Email})
+                  </p>
+                )}
               </div>
             ))}
           </div>
