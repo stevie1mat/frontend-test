@@ -29,7 +29,7 @@ export default function CreateTaskModal({
   const [selectedCategory, setSelectedCategory] = useState("");
   const token = localStorage.getItem("token");
   const API_BASE_URL =
-    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8084";
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:8084";
 
   const MAPBOX_TOKEN =
     "pk.eyJ1IjoibmVlbGFtZ2F1Y2hhbiIsImEiOiJjbWMwbzg0dXgwNGlnMmxwcmlncWVycnBnIn0.ARZnElbDY2SOiInY94w6aA";
