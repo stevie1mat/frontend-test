@@ -74,8 +74,8 @@ function SkillTagInput({
 
 export default function ProfileDashboardPage() {
   const [profile, setProfile] = useState<{
-    name: string;
-    email: string;
+    Name: string;
+    Email: string;
     university?: string;
     program?: string;
     yearOfStudy?: string;

@@ -27,7 +27,6 @@ export default function CreateTaskModal({
   const [locationSuggestions, setLocationSuggestions] = useState<any[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const token = localStorage.getItem("token");
   const API_BASE_URL =
     process.env.NEXT_PUBLIC_TASK_API_URL || "http://localhost:8084";
 
@@ -35,6 +34,10 @@ export default function CreateTaskModal({
     "pk.eyJ1IjoibmVlbGFtZ2F1Y2hhbiIsImEiOiJjbWMwbzg0dXgwNGlnMmxwcmlncWVycnBnIn0.ARZnElbDY2SOiInY94w6aA";
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return;
+    }
     const fetchCategories = async () => {
       try {
         const res = await fetch(`${API_BASE_URL}/api/tasks/categories`, {
@@ -120,9 +123,14 @@ export default function CreateTaskModal({
   };
 
   const handleAvailabilityChange = (field: string, value: string) => {
-    const updated = [...formData.availability];
-    updated[0][field] = value;
-    setFormData((prev) => ({ ...prev, availability: updated }));
+    setFormData((prev) => {
+      const availability = [...prev.availability];
+      availability[0] = {
+        ...availability[0],
+        [field]: value,
+      };
+      return { ...prev, availability };
+    });
   };
 
   const handleSubmit = async (e: any) => {
@@ -150,6 +158,7 @@ export default function CreateTaskModal({
       category: selectedCategory,
       credits: Number(formData.credits),
     };
+    const token = localStorage.getItem("token");
 
     try {
       const res = await fetch(`${API_BASE_URL}/api/tasks/create`, {

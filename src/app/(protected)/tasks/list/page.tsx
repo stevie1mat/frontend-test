@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import CreateListingModal from "../CreateTaskModal";
@@ -20,71 +21,70 @@ interface Author {
 
 interface Task {
   id: number;
-  title: string;
-  description: string;
-  location: string;
-  latitude: number;
+  Title: string;
+  Description: string;
+  Location: string;
+  Latitude: number;
   longitude: number;
-  locationType: string;
-  credits: number;
-  availability: Availability[];
-  type?: string;
-  status?: string;
-  author?: Author;
-}
-
-function normalizeTask(raw: any): Task {
-  return {
-    id: raw.ID,
-    title: raw.Title,
-    description: raw.Description,
-    location: raw.Location,
-    latitude: raw.Latitude,
-    longitude: raw.Longitude,
-    locationType: raw.LocationType,
-    credits: raw.Credits,
-    availability: raw.Availability,
-    type: raw.Type,
-    status: raw.Status,
-    author: raw.Author,
-  };
+  LocationType: string;
+  Credits: number;
+  Availability: Availability[];
+  Type?: string;
+  Status?: string;
+  Author?: Author;
 }
 
 export default function TaskListPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<number | null>(null);
-  const API_BASE_URL =
-    process.env.NEXT_PUBLIC_TASK_API_URL || "http://localhost:8084";
 
-  const fetchTasks = () => {
+  useEffect(() => {
+    // Defensive: Only run in browser
     const token = localStorage.getItem("token");
-    if (!token) return;
 
-    fetch(`${API_BASE_URL}/api/tasks/get/user`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        const normalized = (json.data || json).map(normalizeTask);
-        setTasks(normalized);
-      })
-      .catch((err) => {
-        console.error("Error fetching tasks:", err);
-      })
-      .finally(() => setLoading(false));
-  };
+    const fetchTasks = async () => {
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const API_BASE_URL =
+          process.env.NEXT_PUBLIC_TASK_API_URL || "http://localhost:8084";
+
+        const res = await fetch(`${API_BASE_URL}/api/tasks/get/user`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const json = await res.json();
+        setTasks(json.data || json);
+      } catch (err) {
+        console.error("Failed to fetch tasks:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTasks();
+  }, []);
 
   const handleDelete = async () => {
-    if (!taskToDelete) return;
+    if (typeof window === "undefined") return;
+
     const token = localStorage.getItem("token");
-    if (!token) return;
+    if (!taskToDelete || !token) return;
 
     try {
+      const API_BASE_URL =
+        process.env.NEXT_PUBLIC_TASK_API_URL || "http://localhost:8084";
+
       const res = await fetch(
         `${API_BASE_URL}/api/tasks/delete/${taskToDelete}`,
         {
@@ -101,7 +101,9 @@ export default function TaskListPage() {
       }
 
       toast.success("🗑️ Task deleted");
-      fetchTasks();
+      setTasks((prevTasks) =>
+        prevTasks.filter((task) => task.id !== taskToDelete)
+      );
     } catch (err) {
       console.error("Delete error:", err);
       toast.error("❌ Network error");
@@ -111,9 +113,7 @@ export default function TaskListPage() {
     }
   };
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
+  console.log("task", tasks);
 
   return (
     <ProtectedLayout>
@@ -149,25 +149,25 @@ export default function TaskListPage() {
                 >
                   ×
                 </button>
-                <h3 className="text-lg font-semibold mb-1">{task.title}</h3>
-                <p className="text-sm text-gray-600 mb-2">{task.description}</p>
+                <h3 className="text-lg font-semibold mb-1">{task.Title}</h3>
+                <p className="text-sm text-gray-600 mb-2">{task.Description}</p>
                 <p className="text-xs text-gray-500 mb-1">
-                  📍 <strong>{task.location}</strong> ({task.locationType})
+                  📍 <strong>{task.Location}</strong> ({task.LocationType})
                 </p>
-                {task.availability?.length > 0 && (
+                {task.Availability?.length > 0 && (
                   <p className="text-xs text-gray-500 mb-1">
-                    📅 {task.availability[0].Date} — ⏰{" "}
-                    {task.availability[0].TimeFrom} to{" "}
-                    {task.availability[0].TimeTo}
+                    📅 {task.Availability[0].Date} — ⏰{" "}
+                    {task.Availability[0].TimeFrom} to{" "}
+                    {task.Availability[0].TimeTo}
                   </p>
                 )}
                 <p className="text-sm font-medium text-gray-700">
-                  🪙 {task.credits} credits
+                  🪙 {task.Credits} credits
                 </p>
-                {task.author && (
+                {task.Author && (
                   <p className="text-xs text-gray-500 mt-1">
-                    👤 Listed by <strong>{task.author.name}</strong>{" "}
-                    {task.author.Name} ({task.author.Email})
+                    👤 Listed by <strong>{task.Author.Name}</strong> (
+                    {task.Author.Email})
                   </p>
                 )}
               </div>
@@ -204,7 +204,6 @@ export default function TaskListPage() {
           isOpen={isModalOpen}
           onClose={() => {
             setIsModalOpen(false);
-            fetchTasks();
           }}
           showToast={(msg, type) => toast[type](msg)}
         />

@@ -152,10 +152,10 @@ export default function TaskMap({ tasks }: { tasks: any[] }) {
                   <div className="flex items-center gap-3 mb-2">
                     <Image
                       src={avatar}
-                      alt={name}
                       width={48}
                       height={48}
                       className="rounded-full object-cover"
+                      alt={"avatar"}
                     />
                     <div>
                       <p className="font-semibold text-sm">{name}</p>

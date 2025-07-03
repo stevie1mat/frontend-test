@@ -116,11 +116,11 @@ export default function UserProfileSummaryPage() {
               <p className="text-sm text-gray-500 mb-2">
                 Email: {profile.Email}
               </p>
-              {profile.skills && profile.Skills.length > 0 && (
+              {profile.Skills && profile.Skills.length > 0 && (
                 <div className="mt-4">
                   <p className="text-sm font-medium mb-2">Skills:</p>
                   <div className="flex flex-wrap gap-2">
-                    {profile.skills.map((skill, index) => (
+                    {profile.Skills.map((skill, index) => (
                       <span
                         key={index}
                         className="bg-violet-100 text-violet-800 px-2 py-1 rounded-full text-xs"

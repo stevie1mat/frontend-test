@@ -2,43 +2,40 @@
 
 import React, { useEffect, useState } from "react";
 import ProtectedLayout from "@/components/Layout/ProtectedLayout";
-import TaskMap from "@/components/tasks/TasksMap";
+import dynamic from "next/dynamic";
+// import TaskMap from "@/components/tasks/TasksMap";
+
+const TaskMap = dynamic(() => import("@/components/tasks/TasksMap"), {
+  ssr: false,
+});
 
 export default function Page() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const token = localStorage.getItem("token");
-  const API_BASE_URL =
-    process.env.NEXT_PUBLIC_TASK_API_URL || "http://localhost:8084";
-
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return;
+    }
     const fetchTasks = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/tasks/get/all`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!res.ok) {
-          throw new Error("Failed to fetch tasks");
-        }
-
-        const data = await res.json();
-        setTasks(data);
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      } finally {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_TASK_API_URL}/api/tasks/get/user`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        const json = await res.json();
+        setTasks(json.data || json);
         setLoading(false);
+      } catch (err) {
+        console.error("Failed to fetch tasks:", err);
       }
     };
 
-    if (token) {
-      fetchTasks();
-    }
-  }, [token]);
-
+    fetchTasks();
+  }, []);
   return (
     <ProtectedLayout>
       {loading ? (

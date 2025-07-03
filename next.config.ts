@@ -5,6 +5,9 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+        experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -15,12 +18,15 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+
   },
+  
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   webpack: (config: any) => {
     config.resolve.alias['@'] = path.resolve(__dirname, 'src');
     return config;
   },
+
 };
 
 export default nextConfig;
