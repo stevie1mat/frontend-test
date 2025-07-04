@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import ProtectedLayout from "@/components/Layout/ProtectedLayout";
+import { FaTasks, FaListAlt } from "react-icons/fa";
 
 const Map = dynamic(() => import("@/components/OpenStreetMap"), { ssr: false });
 
@@ -72,6 +73,14 @@ function SkillTagInput({
 
 // ───────────────────────────────────────────────────────────────────────────────
 
+// Define Task type for taskStats
+type Task = {
+  Title?: string;
+  title?: string;
+  Credits?: number;
+  credits?: number;
+};
+
 export default function ProfileDashboardPage() {
   const [profile, setProfile] = useState<{
     Name: string;
@@ -79,6 +88,7 @@ export default function ProfileDashboardPage() {
     university?: string;
     program?: string;
     yearOfStudy?: string;
+    skills?: string[];
   } | null>(null);
   const [loading, setLoading] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -125,6 +135,9 @@ export default function ProfileDashboardPage() {
   // ────────────────────────────────────────────────────────────────────────────
 
   const router = useRouter();
+
+  // --- Analytics state ---
+  const [taskStats, setTaskStats] = useState<{ total: number; credits: number; recent: Task[] }>({ total: 0, credits: 0, recent: [] });
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -200,6 +213,11 @@ export default function ProfileDashboardPage() {
           university: profileData.university,
           program: profileData.program,
           yearOfStudy: profileData.yearOfStudy,
+          skills: Array.isArray(data.skills) && data.skills.length > 0
+            ? data.skills
+            : Array.isArray(data.Skills)
+              ? data.Skills
+              : [],
         });
 
         // Only show dialog if any required field is missing or empty
@@ -226,6 +244,20 @@ export default function ProfileDashboardPage() {
     };
 
     fetchProfile();
+
+    // Fetch tasks
+    fetch(`${process.env.NEXT_PUBLIC_TASK_API_URL || "http://localhost:8084"}/api/tasks/get/user`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => res.json())
+      .then(json => {
+        const tasks = json.data || json;
+        setTaskStats({
+          total: tasks.length,
+          credits: tasks.reduce((sum: number, t: Task) => sum + (t.Credits || 0), 0),
+          recent: tasks.slice(0, 5),
+        });
+      });
   }, [router]);
 
   useEffect(() => {
@@ -269,18 +301,66 @@ export default function ProfileDashboardPage() {
                 </p>
               </div>
 
-              {/* Reviews */}
-              <div
-                className={`p-6 rounded-xl shadow-md ${
-                  isDarkMode ? "bg-zinc-900" : "bg-white border border-gray-200"
-                }`}
-              >
-                <h2 className="text-lg font-semibold mb-4">Reviews</h2>
-                <p className="text-3xl font-bold text-green-600 text-center mb-2">
-                  ⭐4.85
-                </p>
+              {/* --- Analytics Cards --- */}
+              {/* Task Analytics */}
+              <div className="p-6 rounded-xl shadow-md bg-white border border-gray-200 flex flex-col items-center">
+                <FaTasks className="text-2xl text-emerald-600 mb-2" />
+                <h3 className="font-semibold mb-1">Total Tasks</h3>
+                <p className="text-3xl font-bold">{taskStats.total}</p>
               </div>
-
+              <div className="p-6 rounded-xl shadow-md bg-white border border-gray-200 flex flex-col items-center">
+                <FaListAlt className="text-2xl text-emerald-600 mb-2" />
+                <h3 className="font-semibold mb-1">Credits Earned</h3>
+                <p className="text-3xl font-bold">{taskStats.credits} 🪙</p>
+              </div>
+              <div className="p-6 rounded-xl shadow-md bg-white border border-gray-200 col-span-2">
+                <h3 className="font-semibold mb-2 flex items-center gap-2"><FaTasks /> Recent Tasks</h3>
+                <ul className="text-sm space-y-1">
+                  {taskStats.recent.length === 0 ? <li>No recent tasks.</li> : taskStats.recent.map((t: Task, i) => (
+                    <li key={i} className="flex justify-between">
+                      <span>{t.Title || t.title}</span>
+                      <span className="text-gray-500">{t.Credits || t.credits} 🪙</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {/* Profile Analytics */}
+              <div className="p-6 rounded-xl shadow-md bg-white border border-gray-200">
+                <h3 className="font-semibold mb-2 flex items-center gap-2"><FaListAlt /> Profile Completion</h3>
+                <ul className="text-sm space-y-1">
+                  <li>University: <span className="font-medium">{profile.university || "-"}</span></li>
+                  <li>Program: <span className="font-medium">{profile.program || "-"}</span></li>
+                  <li>Year: <span className="font-medium">{profile.yearOfStudy || "-"}</span></li>
+                  <li className="flex items-center">
+                    Skills:
+                    {Array.isArray(profile.skills) && profile.skills.length > 0 ? (
+                      <span className="inline-flex flex-wrap gap-2 ml-2">
+                        {profile.skills.map((skill, i) => {
+                          const colors = [
+                            'bg-violet-100 text-violet-800',
+                            'bg-emerald-100 text-emerald-800',
+                            'bg-yellow-100 text-yellow-800',
+                            'bg-pink-100 text-pink-800',
+                            'bg-blue-100 text-blue-800',
+                            'bg-orange-100 text-orange-800',
+                          ];
+                          const color = colors[i % colors.length];
+                          return (
+                            <span
+                              key={skill}
+                              className={`px-2 py-1 rounded-full text-xs font-medium ${color}`}
+                            >
+                              {skill}
+                            </span>
+                          );
+                        })}
+                      </span>
+                    ) : (
+                      <span className="font-medium ml-2">-</span>
+                    )}
+                  </li>
+                </ul>
+              </div>
               {/* Map */}
               <div
                 className={`p-6 rounded-xl shadow-md col-span-2 ${
@@ -290,87 +370,6 @@ export default function ProfileDashboardPage() {
                 <h2 className="text-lg font-semibold mb-4">Locations</h2>
                 <div className="h-64 rounded-lg overflow-hidden">
                   <Map />
-                </div>
-              </div>
-
-              {/* Rewards */}
-              <div
-                className={`p-6 rounded-xl shadow-md ${
-                  isDarkMode ? "bg-zinc-900" : "bg-white border border-gray-200"
-                }`}
-              >
-                <h2 className="text-lg font-semibold mb-4">Rewards</h2>
-                <div
-                  className={`h-24 rounded-lg flex items-center justify-between px-4 ${
-                    isDarkMode ? "bg-zinc-700" : "bg-gray-100"
-                  }`}
-                >
-                  <div>
-                    <p className="text-sm font-semibold">Congratulations</p>
-                    <p className="text-lg font-bold text-green-600">$50</p>
-                  </div>
-                  <Image
-                    src="/reward.jpg"
-                    alt="Reward"
-                    width={64}
-                    height={64}
-                    className="object-contain rounded"
-                  />
-                </div>
-              </div>
-
-              {/* Activity */}
-              <div
-                className={`p-6 rounded-xl shadow-md ${
-                  isDarkMode ? "bg-zinc-900" : "bg-white border border-gray-200"
-                }`}
-              >
-                <h2 className="text-lg font-semibold mb-2">Activity Summary</h2>
-                <p className="text-sm">
-                  You have spent <span className="font-bold">3h 45m</span>{" "}
-                  learning this week.
-                </p>
-                <p className="text-sm text-green-600 mt-1">
-                  +37 Credits Earned
-                </p>
-              </div>
-
-              {/* Wallet */}
-              <div
-                className={`p-6 rounded-xl shadow-md text-center ${
-                  isDarkMode ? "bg-zinc-900" : "bg-white border border-gray-200"
-                }`}
-              >
-                <h2 className="text-lg font-semibold mb-2">Your Credits</h2>
-                <p className="text-4xl font-bold text-violet-600">152 🪙</p>
-                <p className="text-sm text-gray-500">
-                  Use credits to unlock premium content
-                </p>
-              </div>
-
-              {/* Redeemable Rewards */}
-              <div
-                className={`p-6 rounded-xl shadow-md ${
-                  isDarkMode ? "bg-zinc-900" : "bg-white border border-gray-200"
-                } col-span-2`}
-              >
-                <h2 className="text-lg font-semibold mb-4">Redeem Rewards</h2>
-                <div className="space-y-3">
-                  {[
-                    { title: "$10 Discount Coupon", cost: 100 },
-                    { title: "1-on-1 Mentorship Call", cost: 150 },
-                    { title: "Premium Course Access", cost: 200 },
-                  ].map((reward, index) => (
-                    <div
-                      key={index}
-                      className="flex justify-between items-center"
-                    >
-                      <span className="text-sm">{reward.title}</span>
-                      <button className="text-xs bg-violet-600 text-white px-3 py-1 rounded">
-                        Redeem ({reward.cost} 🪙)
-                      </button>
-                    </div>
-                  ))}
                 </div>
               </div>
             </div>

@@ -17,7 +17,7 @@ interface Notification {
   read: boolean;
 }
 
-function NotificationBell() {
+export function NotificationBell() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -160,25 +160,8 @@ function NotificationBell() {
 }
 
 export default function Sidebar() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-
-  useEffect(() => {
-    const saved = localStorage.getItem("theme");
-    setIsDarkMode(saved === "dark");
-  }, []);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    if (isDarkMode) {
-      root.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      root.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDarkMode]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -186,59 +169,50 @@ export default function Sidebar() {
   };
 
   return (
-    <div
-      className={`${
-        isDarkMode ? "bg-black text-white" : "bg-white text-black"
-      } min-h-screen flex`}
-    >
+    <div className="min-h-screen flex bg-gradient-to-br from-gray-100 via-white to-gray-200">
       <aside
-        className={`w-64 min-h-screen p-5 space-y-4 ${
-          isDarkMode ? "bg-zinc-800" : "bg-white border-r border-gray-200"
-        }`}
+        className="w-64 min-h-screen p-0 flex flex-col items-stretch bg-white/70 backdrop-blur-lg shadow-xl border-r border-gray-200 rounded-r-3xl"
       >
-        <div className="p-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold">TradeMinutes</h1>
-          <NotificationBell />
+        <div className="px-6 py-8 flex flex-col items-center gap-4 border-b border-gray-100">
+          <h1 className="text-2xl font-extrabold tracking-tight text-gray-800">TradeMinutes.</h1>
         </div>
-
-        <nav className="space-y-2">
+        <nav className="flex-1 flex flex-col gap-2 px-4 py-8">
           <SidebarButton
             href="/dashboard"
             label="Dashboard"
             pathname={pathname}
-            icon={<MdDashboard />}
+            icon={<MdDashboard size={22} />}
           />
           <SidebarButton
-            href="/book-appointment"
-            label="Book Appointment"
+            href="/tasks/explore"
+            label="Explore Services"
             pathname={pathname}
-            icon={<FaRegCalendarAlt />}
+            icon={<MdExplore size={22} />}
+          />
+          <SidebarButton
+            href="/tasks/list"
+            label="My Listings"
+            pathname={pathname}
+            icon={<MdTask size={22} />}
+          />
+          <SidebarButton
+            href="/appointments"
+            label="My Appointments"
+            pathname={pathname}
+            icon={<FaRegCalendarAlt size={20} />}
           />
           <SidebarButton
             href="/profile"
             label="My Profile"
             pathname={pathname}
-            icon={<FaUserAlt />}
+            icon={<FaUserAlt size={20} />}
           />
           <SidebarButton
-            href="/tasks/list"
-            label="Tasks"
+            href="/settings"
+            label="Settings"
             pathname={pathname}
-            icon={<MdTask />}
+            icon={<FiLogOut size={20} />}
           />
-          <SidebarButton
-            href="/tasks/explore"
-            label="Explore Nearby Tasks"
-            pathname={pathname}
-            icon={<MdExplore />}
-          />
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 w-full text-left py-2 px-4 rounded bg-white hover:bg-gray-200 dark:bg-zinc-800 dark:hover:bg-zinc-700"
-          >
-            <FiLogOut className="text-lg" />
-            Logout
-          </button>
         </nav>
       </aside>
     </div>
@@ -260,14 +234,15 @@ function SidebarButton({
   return (
     <Link
       href={href}
-      className={`flex items-center gap-2 w-full text-left py-2 px-4 rounded ${
+      className={`flex items-center gap-3 w-full py-2 px-4 rounded-full font-medium transition-colors text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 ${
         isActive
-          ? "bg-violet-600 text-white"
-          : "bg-gray-100 dark:bg-zinc-700 text-black dark:text-white"
+          ? "bg-emerald-500 text-white shadow-md"
+          : "bg-white/80"
       }`}
+      style={{ minHeight: 44 }}
     >
       {icon}
-      {label}
+      <span className="truncate">{label}</span>
     </Link>
   );
 }

@@ -41,37 +41,31 @@ export default function TaskListPage() {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<number | null>(null);
 
-  useEffect(() => {
-    // Defensive: Only run in browser
+  const fetchTasks = async () => {
     const token = localStorage.getItem("token");
-
-    const fetchTasks = async () => {
-      if (!token) {
-        setLoading(false);
-        return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+    try {
+      const API_BASE_URL =
+        process.env.NEXT_PUBLIC_TASK_API_URL || "http://localhost:8084";
+      const res = await fetch(`${API_BASE_URL}/api/tasks/get/user`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
       }
+      const json = await res.json();
+      setTasks(json.data || json);
+    } catch (err) {
+      console.error("Failed to fetch tasks:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      try {
-        const API_BASE_URL =
-          process.env.NEXT_PUBLIC_TASK_API_URL || "http://localhost:8084";
-
-        const res = await fetch(`${API_BASE_URL}/api/tasks/get/user`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
-        const json = await res.json();
-        setTasks(json.data || json);
-      } catch (err) {
-        console.error("Failed to fetch tasks:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
+  useEffect(() => {
     fetchTasks();
   }, []);
 
@@ -117,9 +111,9 @@ export default function TaskListPage() {
 
   return (
     <ProtectedLayout>
-      <div className="min-h-screen bg-gray-100 p-8">
+      <div className="min-h-screen bg-white p-8">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-semibold">Community Listings</h1>
+          <h1 className="text-2xl font-semibold">My Listings</h1>
           <button
             onClick={() => setIsModalOpen(true)}
             className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-xl text-sm font-medium shadow hover:scale-105 transition"
@@ -134,44 +128,56 @@ export default function TaskListPage() {
           <p>No tasks found.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tasks.map((task) => (
-              <div
-                key={task.id}
-                className="bg-white rounded-3xl p-5 shadow-md hover:shadow-xl relative"
-              >
-                <button
-                  onClick={() => {
-                    setTaskToDelete(task.id);
-                    setShowConfirmModal(true);
-                  }}
-                  className="absolute top-3 right-4 text-lg text-red-500 hover:text-red-700 font-bold"
-                  title="Delete"
+            {tasks.map((task: Task, idx: number) => {
+              // Colorful border palette
+              const borderColors = [
+                'border-green-400',
+                'border-blue-400',
+                'border-pink-400',
+                'border-yellow-400',
+                'border-purple-400',
+                'border-orange-400',
+              ];
+              const borderClass = borderColors[idx % borderColors.length];
+              return (
+                <div
+                  key={task.id}
+                  className={`bg-white rounded-lg p-5 shadow-md hover:shadow-xl relative border-2 ${borderClass}`}
                 >
-                  ×
-                </button>
-                <h3 className="text-lg font-semibold mb-1">{task.Title}</h3>
-                <p className="text-sm text-gray-600 mb-2">{task.Description}</p>
-                <p className="text-xs text-gray-500 mb-1">
-                  📍 <strong>{task.Location}</strong> ({task.LocationType})
-                </p>
-                {task.Availability?.length > 0 && (
+                  <button
+                    onClick={() => {
+                      setTaskToDelete(task.id);
+                      setShowConfirmModal(true);
+                    }}
+                    className="absolute top-3 right-4 text-lg text-red-500 hover:text-red-700 font-bold"
+                    title="Delete"
+                  >
+                    ×
+                  </button>
+                  <h3 className="text-lg font-semibold mb-1">{task.Title}</h3>
+                  <p className="text-sm text-gray-600 mb-2">{task.Description}</p>
                   <p className="text-xs text-gray-500 mb-1">
-                    📅 {task.Availability[0].Date} — ⏰{" "}
-                    {task.Availability[0].TimeFrom} to{" "}
-                    {task.Availability[0].TimeTo}
+                    📍 <strong>{task.Location}</strong> ({task.LocationType})
                   </p>
-                )}
-                <p className="text-sm font-medium text-gray-700">
-                  🪙 {task.Credits} credits
-                </p>
-                {task.Author && (
-                  <p className="text-xs text-gray-500 mt-1">
-                    👤 Listed by <strong>{task.Author.Name}</strong> (
-                    {task.Author.Email})
+                  {task.Availability?.length > 0 && (
+                    <p className="text-xs text-gray-500 mb-1">
+                      📅 {task.Availability[0].Date} — ⏰{" "}
+                      {task.Availability[0].TimeFrom} to{" "}
+                      {task.Availability[0].TimeTo}
+                    </p>
+                  )}
+                  <p className="text-sm font-medium text-gray-700">
+                    🪙 {task.Credits} credits
                   </p>
-                )}
-              </div>
-            ))}
+                  {task.Author && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      👤 Listed by <strong>{task.Author.Name}</strong> (
+                      {task.Author.Email})
+                    </p>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
 
@@ -202,10 +208,11 @@ export default function TaskListPage() {
 
         <CreateListingModal
           isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false);
-          }}
-          showToast={(msg, type) => toast[type](msg)}
+          onClose={() => setIsModalOpen(false)}
+          showToast={(msg, type) =>
+            type === "success" ? toast.success(msg) : toast.error(msg)
+          }
+          onCreated={fetchTasks}
         />
 
         <ToastContainer position="top-right" autoClose={3000} />

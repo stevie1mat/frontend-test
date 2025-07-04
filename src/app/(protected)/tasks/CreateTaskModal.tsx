@@ -6,12 +6,14 @@ interface CreateTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
   showToast: (msg: string, type: "success" | "error") => void;
+  onCreated?: () => void;
 }
 
 export default function CreateTaskModal({
   isOpen,
   onClose,
   showToast,
+  onCreated,
 }: CreateTaskModalProps) {
   const [formData, setFormData] = useState({
     title: "",
@@ -176,6 +178,7 @@ export default function CreateTaskModal({
         showToast("❌ Failed to create task.", "error");
       } else {
         showToast("✅ Task created successfully!", "success");
+        if (onCreated) onCreated();
         onClose();
       }
     } catch (err) {
